@@ -1038,9 +1038,9 @@
     $("retryBtn").classList.toggle("hidden", finalState !== "failed");
   }
   $("retryBtn").addEventListener("click", () => { fails = 0; setFinal("sending"); clearTimeout(retryTimer); flush(); });
-  // to the start screen (2026-11-21). The finished state is kept, so the same ID opens this page again and answers
-  // cannot change after the final was sent; a new ID starts afresh. Before, this reopened the first item still open,
-  // which in stage 2 was the first comparison (stage 1 is locked there), and editing it re-sent finished answers.
+  // to the start screen (2026-11-21). The finished state is kept, so the same ID opens this page again and nothing
+  // changes after the final was sent; a new ID starts afresh. Before, this reopened the first item still open,
+  // which in stage 2 was the first comparison (stage 1 is locked there), and editing it re-sent finished responses.
   $("backBtn").addEventListener("click", () => {
     $("done").classList.add("hidden"); $("start").classList.remove("hidden");
     idInput.value = ""; onIdInput(); window.scrollTo(0, 0);
