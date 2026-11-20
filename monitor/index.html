@@ -150,11 +150,8 @@ td.hit { text-align: center; }
         <div class="res-banner" id="resBanner"></div>
         <div class="legend" id="resLegend" style="margin-bottom:10px"></div>
         <h2>1단계: 사람들이 고른 대상의 카메라 상자를 각 방법이 덮은 비율 (주 결과)</h2>
-        <p class="sub">장면마다 다수결 대상(차량·보행자는 그 상자, 그 밖의 대상은 다수결에 든 사람들이 그린 상자)의 면적 중 방법이 고른 카메라 칸 안에 든 비율의 평균입니다. 점선은 같은 수의 칸을 무작위로 골랐을 때의 기대값입니다. "특정 대상 없음" 다수결과 카메라에 보이지 않는 대상은 빠집니다. 규칙은 analysis/coverage.py와 같습니다.</p>
+        <p class="sub">평가자가 표시한 대상마다(차량·보행자는 그 상자, 그 밖의 대상은 그린 상자) 면적 중 방법이 고른 카메라 칸 안에 든 비율을 구해, 평가자별로 평균하고 다시 평가자들끼리 평균한 값입니다. 표시는 순서 없이 모두 똑같이 셉니다. 점선은 같은 수의 칸을 무작위로 골랐을 때의 기대값입니다. "특정 대상 없음"이 과반인 장면과 카메라에 보이지 않는 대상은 빠집니다. 규칙은 analysis/coverage.py와 같습니다.</p>
         <div class="groups" id="hitGroups"></div>
-        <h2 style="margin-top:14px">참고: LiDAR 지도에서 덮은 비율</h2>
-        <p class="sub">대상의 지도 위 면적 중 방법이 고른 LiDAR 칸(8 m) 안에 든 비율입니다. 칸이 크고 방법마다 고르는 LiDAR 칸 수가 달라 주 결과와 따로 봅니다.</p>
-        <div class="groups" id="lidGroups"></div>
         <div style="height:16px"></div>
         <h2>2단계: 가장 잘 짚은 것으로 고른 비율</h2>
         <p class="sub" id="prefNote"></p>
@@ -579,7 +576,9 @@ td.hit { text-align: center; }
     const inc = [...done].filter(a => !useExcl || !excluded.has(a));
     // responses whose scene is not in this key come from another build of the site (scene ids differ)
     const foreign = CUR.scenes.filter(r => done.has(String(r.annotator_id)) && !SC[(r.response || {}).scene_uid]).length;
-    $("resBanner").innerHTML = (useExcl
+    $("resBanner").innerHTML = (!checks.length
+      ? `<b>중간 결과</b> · 끝까지 마친 <b>${done.size}명</b> 기준 (확인 장면 없음)`
+      : useExcl
       ? `<b>중간 결과</b> · 끝까지 마친 ${done.size}명 중 확인 장면을 통과한 <b>${inc.length}명</b> 기준` +
         (excluded.size ? ` (제외 ${excluded.size}명 — ${[...excluded].map(a => esc(why[a])).join(", ")}. 확인 장면에서 표시 중에 기대한 대상이 없거나 "특정 대상 없음"을 고르면 놓친 것으로 셉니다)` : "")
       : `<b>시험용: 제외 규칙 꺼짐</b> · 끝까지 마친 <b>${done.size}명</b> 모두 포함` +
@@ -597,7 +596,7 @@ td.hit { text-align: center; }
       const cs = consensusOf(sets);
       const cov = Object.fromEntries(M.map(m => {
         const regs = SC[u].monitor.sets[m] || [], o = { chance: chanceOf(regs) };
-        ["camera", "lidar"].forEach(s => {
+        ["camera"].forEach(s => {                         // LiDAR coverage: analysis/report.py only (not shown here)
           const per = [];
           if (!cs.noneMaj) inc.forEach(a => {
             const x = (resp[a] || {})[u];
@@ -613,14 +612,14 @@ td.hit { text-align: center; }
     });
     const groupsDef = [["전체", r => true], ["정지", r => r.concept === "stop"], ["감속", r => r.concept === "decelerate"]];
     const mean = a => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN);
-    const block = s => groupsDef.filter(([, f]) => rows.some(f)).map(([name, f]) => {
+    const oneConcept = new Set(rows.map(r => r.concept)).size <= 1;      // stop only (D-13): "전체" alone
+    const block = s => groupsDef.filter(([name, f]) => rows.some(f) && !(oneConcept && name !== "전체")).map(([name, f]) => {
       const rs = rows.filter(f), used = rs.filter(r => r.cov[M[0]][s] !== null);
       const bars = M.map(m => [m, mean(used.map(r => r.cov[m][s])), used.length, mean(used.map(r => r.cov[m].chance[s]))]);
       const nNone = rs.filter(r => r.cs.noneMaj).length;
       return `<div><h3>${name} · 계산된 장면 ${used.length} / ${rs.length}${nNone ? ` <span class="small">("특정 대상 없음" 과반 ${nNone})</span>` : ""}</h3>${cbars(bars, L, COL)}</div>`;
     }).join("");
     $("hitGroups").innerHTML = (oldKey ? `<p class="small" style="grid-column:1/-1;color:var(--warn)">이 브라우저에 기억된 key가 예전 형식이라 덮은 비율을 계산할 수 없습니다. "이 브라우저에서 key 잊기"를 누르고 key.json을 다시 열어 주세요.</p>` : "") + block("camera");
-    $("lidGroups").innerHTML = block("lidar");
 
     // stage 2: chosen method shares (finished, included annotators)
     const comps = CUR.compares.filter(r => inc.includes(String(r.annotator_id)));
