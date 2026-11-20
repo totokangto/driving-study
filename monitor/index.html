@@ -139,10 +139,11 @@ td.hit { text-align: center; }
 
     <div class="card" id="resCard">
       <h2>방법별 중간 결과</h2>
-      <p class="sub">이 데이터셋의 <code>key.json</code>을 이 PC에서 열면 나옵니다. 파일은 브라우저 안에서만 읽고 어디에도 올리지 않으며, 새로고침하면 다시 열어야 합니다.</p>
+      <p class="sub">이 데이터셋의 <code>key.json</code>을 <b>처음 한 번만</b> 이 PC에서 열면, 이 브라우저가 기억해 두고 다음부터 자동으로 씁니다. 파일은 어디에도 올리지 않습니다(공개 사이트에 두면 평가자가 방법을 알 수 있어서 이렇게 합니다).</p>
       <label class="filebtn"><input type="file" id="keyFile" accept=".json,application/json"></label>
       <label class="chk" style="margin-left:12px"><input type="checkbox" id="useExcl" checked> 확인 장면 제외 규칙 적용 (끄면 시험용: 모든 완료자 포함)</label>
       <p id="resMsg" class="small"></p>
+      <button id="forgetKey" class="hidden" style="font-size:12px;padding:3px 8px">이 브라우저에서 key 잊기</button>
       <div id="resBody" class="hidden">
         <div class="res-banner" id="resBanner"></div>
         <div class="legend" id="resLegend" style="margin-bottom:10px"></div>
@@ -459,12 +460,30 @@ td.hit { text-align: center; }
     try {
       const k = JSON.parse(await f.text());
       if (!k.scenes || !k.method_labels || !k.manifest_id) throw new Error("key.json 형식이 아닙니다 (method_labels가 없으면 build_manifest.py를 다시 돌려 주세요).");
-      KEY = k; $("resMsg").textContent = `${f.name} 열림 · ${k.manifest_id}`;
+      KEY = trimKey(k);
+      store.set(keyStore(k.manifest_id), JSON.stringify(KEY));
+      $("resMsg").textContent = `${f.name} 열림 · ${k.manifest_id} · 이 브라우저에 기억함`;
       renderResults();
     } catch (err) { KEY = null; $("resMsg").textContent = err.message; $("resBody").classList.add("hidden"); }
   });
 
+  // remembered keys: only what this page needs (no scene tokens, no file paths), per dataset, in this browser only
+  const keyStore = mid => `monitor_key_${mid}`;
+  function trimKey(k) {
+    const scenes = {};
+    Object.entries(k.scenes).forEach(([u, v]) => { scenes[u] = { kind: v.kind, monitor: v.monitor, compare_options: v.compare_options }; });
+    return { manifest_id: k.manifest_id, method_labels: k.method_labels, scenes };
+  }
+  $("forgetKey").addEventListener("click", () => {
+    if (CUR) { try { localStorage.removeItem(keyStore(CUR.mid)); } catch (e) { /* ignore */ } }
+    KEY = null; $("keyFile").value = ""; $("resMsg").textContent = "이 데이터셋의 key를 잊었습니다."; renderResults();
+  });
   function renderResults() {
+    if (CUR && (!KEY || KEY.manifest_id !== CUR.mid)) {
+      const saved = store.get(keyStore(CUR.mid));
+      if (saved) { try { KEY = JSON.parse(saved); $("resMsg").textContent = `이 브라우저에 기억된 key 사용 중 · ${CUR.mid}`; } catch (e) { KEY = null; } }
+    }
+    $("forgetKey").classList.toggle("hidden", !(CUR && store.get(keyStore(CUR.mid))));
     if (!KEY || !CUR) { $("resBody").classList.add("hidden"); return; }
     if (KEY.manifest_id !== CUR.mid) {
       $("resMsg").textContent = `이 key.json은 ${KEY.manifest_id}용입니다. 위의 선택 상자에서 같은 데이터셋을 고르세요.`;
