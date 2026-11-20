@@ -98,13 +98,11 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .imgwrap.full canvas { cursor: not-allowed; }
 /* stage 1 sizes, from the width the task column really has (the page stops growing at 1680 px, 2026-11-20 fix: it used
    100vw, so on wide screens the camera height was overestimated and the map shrank to its minimum) and the window height.
-   The camera fills the column, but on a short window it gives up to a quarter of its width so that a map of at least
-   320 px fits under it; the map then takes the height left (camera height = camera width / 4). */
-#task { --colw: calc(min(100vw, 1680px) - var(--side) - 70px); --avail: calc(100vh - var(--bar) - 150px);
-  --camw: min(var(--colw), max(calc(var(--colw) * .75), calc((var(--avail) - 320px) * 4))); }
-#camWrap { max-width: var(--camw); }
+   The camera always fills the column; the map takes the height left under it (camera height = column width / 4), at
+   least 320 px, so on a short window the page scrolls a little (decided with the authors 2026-11-20). */
+#task { --colw: calc(min(100vw, 1680px) - var(--side) - 70px); --avail: calc(100vh - var(--bar) - 150px); }
 .bevrow { display: flex; gap: 14px; align-items: flex-start; }
-#bevWrap { flex: none; width: clamp(320px, calc(var(--avail) - var(--camw) / 4), 512px); }
+#bevWrap { flex: none; width: clamp(320px, calc(var(--avail) - var(--colw) / 4), 512px); }
 .legend { list-style: none; margin: 0; padding: 4px 0 0; font-size: 13px; color: #4b5563; display: grid; gap: 6px; }
 .legend li { display: flex; align-items: center; gap: 8px; }
 .legend .lgnote { color: var(--muted); font-size: 12px; max-width: 220px; display: block; margin-top: 6px; line-height: 1.45; }
@@ -178,7 +176,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
   .taskgrid { grid-template-columns: 1fr; }
   .side { position: static; max-height: none; }
   #bevWrap { width: min(512px, 100%); }
-  #camWrap { max-width: none; }
   .bevrow { flex-direction: column; }
   .steps { grid-template-columns: 1fr; }
 }
