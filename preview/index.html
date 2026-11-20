@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Driving Decision Study</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="start" class="screen">
+  <div class="card narrow">
+    <div class="lang"><button data-lang="ko" class="langbtn">한국어</button><button data-lang="en" class="langbtn">English</button></div>
+    <h1 data-t="title"></h1>
+    <div id="instructions" class="instructions"></div>
+    <label class="idlabel"><span data-t="idLabel"></span>
+      <input id="annotator" autocomplete="off" spellcheck="false" placeholder="A01">
+    </label>
+    <button id="startBtn" class="primary" disabled data-t="start"></button>
+    <p id="resumeNote" class="muted"></p>
+  </div>
+</div>
+
+<div id="task" class="screen hidden">
+  <header class="bar">
+    <div class="progress"><div id="progressFill"></div></div>
+    <span id="progressText"></span>
+    <span id="practiceTag" class="tag hidden" data-t="practice"></span>
+    <span id="syncBadge" class="sync hidden"></span>
+    <button id="helpBtn" class="ghost" data-t="help"></button>
+  </header>
+  <main>
+    <div class="decision" id="decision"></div>
+    <div class="ego" id="ego"></div>
+    <section class="view">
+      <div class="viewhead"><span data-t="camera"></span>
+        <button id="replayBtn" class="ghost" data-t="replay"></button>
+        <span id="replayLabel" class="muted"></span></div>
+      <div class="imgwrap" id="camWrap"><img id="camImg" alt=""><canvas id="camCanvas"></canvas></div>
+    </section>
+    <div class="lower">
+      <section class="view bevsec">
+        <div class="viewhead"><span data-t="bev"></span></div>
+        <div class="imgwrap" id="bevWrap"><img id="bevImg" alt=""><canvas id="bevCanvas"></canvas></div>
+        <div class="legend"><span class="sw ego"></span><span data-t="lgEgo"></span>
+          <span class="sw veh"></span><span data-t="lgVeh"></span>
+          <span class="sw ped"></span><span data-t="lgPed"></span>
+          <span class="sw stop"></span><span data-t="lgStop"></span></div>
+      </section>
+      <section class="panel">
+        <h3 data-t="yourClicks"></h3>
+        <p class="muted small" data-t="clickHint"></p>
+        <ol id="clickList"></ol>
+        <div class="row">
+          <button id="undoBtn" class="ghost" data-t="undo"></button>
+          <label class="none"><input type="checkbox" id="noneBox"> <span data-t="none"></span></label>
+        </div>
+        <h3 data-t="confidence"></h3>
+        <div class="conf" id="conf">
+          <label><input type="radio" name="conf" value="certain"> <span data-t="certain"></span></label>
+          <label><input type="radio" name="conf" value="moderate"> <span data-t="moderate"></span></label>
+          <label><input type="radio" name="conf" value="unsure"> <span data-t="unsure"></span></label>
+        </div>
+        <div class="row nav">
+          <button id="prevBtn" class="ghost" data-t="prev"></button>
+          <button id="nextBtn" class="primary" data-t="next"></button>
+        </div>
+        <p id="nextHint" class="muted small"></p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="done" class="screen hidden">
+  <div class="card narrow">
+    <h1 data-t="doneTitle"></h1>
+    <p id="doneText"></p>
+    <p id="doneSync" class="syncline hidden"></p>
+    <button id="retryBtn" class="primary hidden" data-t="retry"></button>
+    <button id="downloadBtn" class="primary" data-t="download"></button>
+    <button id="backBtn" class="ghost" data-t="back"></button>
+  </div>
+</div>
+
+<div id="helpModal" class="modal hidden"><div class="card narrow"><div id="helpText" class="instructions"></div>
+  <button id="helpClose" class="primary" data-t="close"></button></div></div>
+
+<div id="catPop" class="catpop hidden"></div>
+
+<script src="config.js"></script>
+<script src="data/manifest.js"></script>
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
