@@ -108,7 +108,7 @@
   }
   function enqueue(msg) {
     if (!ONLINE) return;
-    const b = getBox(); b.push(msg); setBox(b); flush();
+    const b = getBox(); b.push(msg); setBox(b); updateSync(); flush();
   }
   async function flush() {
     if (!ONLINE || !S || sending) return;
