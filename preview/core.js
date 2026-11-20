@@ -35,6 +35,31 @@
   function toImagePx(clientX, clientY, rect, naturalWidth, naturalHeight) {
     return { x: (clientX - rect.left) * naturalWidth / rect.width, y: (clientY - rect.top) * naturalHeight / rect.height };
   }
-  const api = { fnv1a, mulberry32, shuffle, makeOrder, pointInRect, pointInPoly, snap, toImagePx };
+  // two drag corners (any order, may leave the image) -> [x0, y0, x1, y1] inside the image
+  function normBox(ax, ay, bx, by, w, h) {
+    const cl = (v, m) => Math.max(0, Math.min(m, v));
+    return [cl(Math.min(ax, bx), w), cl(Math.min(ay, by), h), cl(Math.max(ax, bx), w), cl(Math.max(ay, by), h)];
+  }
+  function boxIoU(a, b) {
+    const iw = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])), ih = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+    const inter = iw * ih, area = r => Math.max(0, r[2] - r[0]) * Math.max(0, r[3] - r[1]);
+    const u = area(a) + area(b) - inter;
+    return u > 0 ? inter / u : 0;
+  }
+  function polyBBox(poly) {
+    const xs = poly.map(p => p[0]), ys = poly.map(p => p[1]);
+    return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+  }
+  // a drawn box -> the object it outlines (IoU >= minIoU with the object's box; best IoU, then nearest), or null
+  function snapBox(objects, view, box, minIoU) {
+    let best = null, bestIoU = minIoU;
+    objects.forEach(o => {
+      const rects = view === "camera" ? o.camera_rects : (o.bev_polygon.length ? [polyBBox(o.bev_polygon)] : []);
+      const iou = Math.max(0, ...rects.map(r => boxIoU(box, r)));
+      if (iou > bestIoU + 1e-9 || (best && Math.abs(iou - bestIoU) < 1e-9 && o.dist < best.dist)) { best = o; bestIoU = iou; }
+    });
+    return best;
+  }
+  const api = { fnv1a, mulberry32, shuffle, makeOrder, pointInRect, pointInPoly, snap, toImagePx, normBox, boxIoU, polyBBox, snapBox };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.AnnotCore = api;
 })(typeof window !== "undefined" ? window : globalThis);
