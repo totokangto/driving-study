@@ -12,9 +12,12 @@
   const TEXT = {
     ko: {
       title: "운전 판단 근거 평가", lead: "자율주행 차량이 본 장면에서, 올바른 운전 판단의 근거가 되는 대상을 골라 주세요.",
-      smallScreen: "화면이 작습니다. PC나 노트북의 큰 화면에서 진행해 주세요.",
+      smallScreen: "📱 휴대폰으로 참여한다면 화면을 꼭 <b>가로</b>로 돌려 주세요. 세로 화면에서는 카메라 이미지가 너무 작아 표시하기 어렵습니다. 가능하면 PC나 노트북을 권장합니다.",
+      rotate: "📱 휴대폰을 가로로 돌려 주세요. 카메라 이미지가 크게 보여 표시하기 쉬워집니다.",
+      tapAgain: "한 번 더 탭(클릭)하면 이 표시가 취소됩니다.", removed: "표시를 취소했습니다.",
+      holdHint: "🔍 길게 누르면 확대",
       ex1a: "올바른 판단:", ex1b: "정지",
-      s1t: "판단 확인", s1d: "오른쪽 위에 이 장면의 올바른 운전 판단이 나옵니다.",
+      s1t: "판단 확인", s1d: "화면의 파란 칸에 이 장면의 올바른 운전 판단이 나옵니다.",
       s2t: "근거 표시", s2d: "꼭 봐야 하는 대상을 고르세요. 차량·보행자는 클릭, 신호등·표지판·정지선 같은 것은 드래그해서 박스를 그립니다. 중요한 순서로 최대 3개.",
       s3t: "종류 · 확신도 → 다음", s3d: "대상 종류와 확신 정도를 고르고 '다음'을 누르세요.",
       cVehicle: "차량", cPed: "보행자", cEtc: "기타", illClick: "클릭", illDrag: "드래그",
@@ -33,8 +36,8 @@
       decLabel: "이 장면의 올바른 운전 판단",
       ego: (v, c) => `현재 속도 ${v} km/h · 경로 안내: ${c}`,
       stagePractice: "연습", stageMain: "본 평가",
-      yourClicks: "근거 대상", clickHint: "차량·보행자는 클릭, 그 밖의 대상은 드래그로 박스를 그리세요.\n중요한 순서로 최대 3개.",
-      clickFull: "최대 3개까지 고를 수 있습니다. 바꾸려면 ×로 지운 뒤 다시 고르세요.",
+      yourClicks: "근거 대상", clickHint: "차량·보행자는 클릭, 그 밖의 대상은 드래그로 박스를 그리세요.\n표시를 두 번 탭(더블클릭)하면 취소됩니다. 중요한 순서로 최대 3개.",
+      clickFull: "최대 3개까지 고를 수 있습니다. 바꾸려면 ×를 누르거나 표시를 두 번 탭해서 지운 뒤 다시 고르세요.",
       viewCam: "카메라", viewBev: "지도", markObj: "대상", markBox: "그린 영역", catPlaceholder: "종류 선택…", del: "지우기",
       popHead: "이 대상은 무엇인가요? (숫자키 1–7)",
       dragHint: "차량·보행자가 아닌 곳은 드래그해서 박스를 그려 주세요.", tooSmall: "박스가 너무 작습니다. 조금 더 크게 그려 주세요.",
@@ -50,12 +53,12 @@
         "먼저 이 장면의 <b>올바른 운전 판단</b>이 무엇이었는지 확인하세요.",
         "<b>전방 카메라</b>입니다. 차량·보행자는 <b>클릭</b>, 신호등·표지판·정지선 같은 것은 <b>드래그해서 박스</b>를 그리세요. <b>직전 1.5초 재생</b>으로 다른 차가 움직이는지 볼 수 있습니다.",
         "<b>위에서 내려다본 지도</b>입니다. 자율주행 모델이 <b>LiDAR</b>로 보는 주변 영역(앞뒤·좌우 32 m)이고, 초록색이 내 차, 위쪽이 진행 방향입니다. 지도에서 표시해도 됩니다.",
-        "클릭한 대상이 <b>중요한 순서대로</b> 여기에 쌓입니다(최대 3개). 종류를 고르고, 잘못 찍었으면 ×로 지우세요. 근거가 되는 특정 대상이 없으면 <b>특정 대상 없음</b>을 고릅니다.",
+        "클릭한 대상이 <b>중요한 순서대로</b> 여기에 쌓입니다(최대 3개). 종류를 고르고, 잘못 찍었으면 ×를 누르거나 그 표시를 <b>두 번 탭(더블클릭)</b>하세요. 근거가 되는 특정 대상이 없으면 <b>특정 대상 없음</b>을 고릅니다.",
         "얼마나 <b>확신</b>하는지 고르세요.",
         "다 골랐으면 <b>다음</b>. 지금은 연습 장면이니 직접 해 보세요!"
       ],
       doneTitle: "끝났습니다. 감사합니다!", doneText: "아래 버튼으로 결과 파일을 내려받아 연구자에게 보내 주세요.",
-      download: "결과 파일 내려받기", back: "← 마지막 장면으로",
+      download: "결과 파일 내려받기", back: "← 첫 장면으로",
       doneTextOnline: "응답은 장면마다 자동으로 연구자에게 전송됩니다.",
       sendingFinal: "결과를 전송하는 중입니다…",
       sentFinal: "✓ 결과가 전송되었습니다. 이제 창을 닫으셔도 됩니다.",
@@ -87,9 +90,12 @@
     },
     en: {
       title: "Driving Decision Study", lead: "In each scene seen by an automated car, pick what the correct driving decision is based on.",
-      smallScreen: "Your screen is small. Please use a PC or laptop.",
+      smallScreen: "📱 On a phone, please turn it to <b>landscape</b>. In portrait the camera image is too small to mark things. A PC or laptop is best.",
+      rotate: "📱 Please turn your phone to landscape: the camera image gets larger and easier to mark.",
+      tapAgain: "Tap (click) once more to remove this mark.", removed: "Mark removed.",
+      holdHint: "🔍 Press and hold to zoom",
       ex1a: "Correct decision:", ex1b: "stop",
-      s1t: "Read the decision", s1d: "The correct driving decision for the scene is shown at the top right.",
+      s1t: "Read the decision", s1d: "The correct driving decision for the scene is shown in the blue box.",
       s2t: "Mark the reasons", s2d: "Mark what a driver must see. Click vehicles and pedestrians; drag a box around anything else (lights, signs, stop lines). Most important first, up to 3.",
       s3t: "Type · confidence → Next", s3d: "Choose the object type and your confidence, then press Next.",
       cVehicle: "Vehicle", cPed: "Pedestrian", cEtc: "Other", illClick: "click", illDrag: "drag",
@@ -108,8 +114,8 @@
       decLabel: "Correct driving decision",
       ego: (v, c) => `Speed ${v} km/h · Route: ${c}`,
       stagePractice: "Practice", stageMain: "Study",
-      yourClicks: "Reasons", clickHint: "Click vehicles and pedestrians; drag a box around anything else.\nMost important first, up to 3.",
-      clickFull: "Up to 3 reasons. To change one, remove it with × and click again.",
+      yourClicks: "Reasons", clickHint: "Click vehicles and pedestrians; drag a box around anything else.\nDouble-tap (double-click) a mark to remove it. Most important first, up to 3.",
+      clickFull: "Up to 3 reasons. To change one, remove it with × or by double-tapping it, then mark again.",
       viewCam: "Camera", viewBev: "Map", markObj: "object", markBox: "drawn box", catPlaceholder: "Choose type…", del: "Remove",
       popHead: "What is it? (keys 1–7)",
       dragHint: "For anything other than a vehicle or pedestrian, drag to draw a box.", tooSmall: "The box is too small. Draw it a bit larger.",
@@ -125,12 +131,12 @@
         "First, check what the <b>correct driving decision</b> was in this scene.",
         "The <b>front camera</b>. <b>Click</b> vehicles and pedestrians; <b>drag a box</b> around lights, signs, stop lines and the like. <b>Replay last 1.5 s</b> shows whether other road users move.",
         "The <b>top-down map</b>: the area around the car (32 m each way) that the driving model sees with <b>LiDAR</b>. Green is our car, up is the driving direction. You can mark here too.",
-        "Your clicks stack up here, <b>most important first</b> (up to 3). Choose a type for each; remove a wrong one with ×. If no specific object is the reason, choose <b>No specific object</b>.",
+        "Your clicks stack up here, <b>most important first</b> (up to 3). Choose a type for each; remove a wrong one with × or by <b>double-tapping</b> it. If no specific object is the reason, choose <b>No specific object</b>.",
         "Choose how <b>confident</b> you are.",
         "Then press <b>Next</b>. This is a practice scene, so try it now!"
       ],
       doneTitle: "All done. Thank you!", doneText: "Please download the result file below and send it to the researcher.",
-      download: "Download result file", back: "← Back to the last scene",
+      download: "Download result file", back: "← Back to the first scene",
       doneTextOnline: "Your responses are sent to the researcher automatically after every scene.",
       sendingFinal: "Sending your results…",
       sentFinal: "✓ Your results have been sent. You can close this window now.",
@@ -173,6 +179,7 @@
   const N_PRACTICE = M.scenes.filter(s => s.kind === "practice").length;
   const N_STUDY = M.scenes.length - N_PRACTICE;
   const T = () => TEXT[lang];
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const $ = id => document.getElementById(id);
   const storeKey = id => `annot_state_v1_${id}`;
 
@@ -279,6 +286,8 @@
     if (S && !$("survey").classList.contains("hidden")) renderSurvey();
     $("loupeBtn").textContent = loupeOn ? T().loupeOn : T().loupeOff;
     $("loupeBtn").setAttribute("aria-pressed", String(loupeOn));
+    $("loupeBtn").classList.toggle("hidden", HOVERLESS);        // touch-only devices: press and hold instead
+    $("holdHint").classList.toggle("hidden", !HOVERLESS);
     if (tourIdx !== null) showTourStep();
     updateSync(); renderDoneSync();
   }
@@ -308,7 +317,12 @@
   idInput.addEventListener("input", onIdInput);
   idInput.addEventListener("keydown", e => { if (e.key === "Enter" && !$("startBtn").disabled) $("startBtn").click(); });
   document.querySelectorAll(".langbtn").forEach(b => b.addEventListener("click", () => { lang = b.dataset.lang; applyLang(); }));
-  const checkScreen = () => $("smallScreen").classList.toggle("hidden", window.innerWidth >= 1000);
+  // phones: say "landscape" on the start screen; during the task, a band while the phone is held upright
+  const HOVERLESS = window.matchMedia("(hover: none)").matches;
+  const checkScreen = () => {
+    $("smallScreen").classList.toggle("hidden", window.innerWidth >= 1000 && !HOVERLESS);
+    $("rotateHint").classList.toggle("hidden", !(window.matchMedia("(orientation: portrait)").matches && window.innerWidth < 760));
+  };
   checkScreen(); window.addEventListener("resize", checkScreen);
 
   // A new ID (nothing saved in this browser) is checked against the collector: if another device already sent data
@@ -379,6 +393,7 @@
     $("stageTag").className = practice ? "tag practice" : "tag";
     $("progressText").textContent = practice ? `${S.idx + 1} / ${N_PRACTICE}` : `${S.idx + 1 - N_PRACTICE} / ${N_STUDY}`;
     $("decision").textContent = lang === "ko" ? sc.decision_ko : sc.decision_en;
+    $("decMini").innerHTML = `${T().decLabel}: <b>${esc(lang === "ko" ? sc.decision_ko : sc.decision_en)}</b>`;
     $("ego").textContent = T().ego(sc.ego_speed_kmh.toFixed(0), T().commands[sc.driving_command] || sc.driving_command);
     const ci = $("camImg"), bi = $("bevImg");
     if (ci.dataset.uid !== sc.scene_uid) {
@@ -433,6 +448,7 @@
     $("stageTag").className = "tag stage2";
     $("progressText").textContent = `${S.cmp_idx + 1} / ${CMP.length}`;
     $("decision").textContent = lang === "ko" ? sc.decision_ko : sc.decision_en;
+    $("decMini").innerHTML = `${T().decLabel}: <b>${esc(lang === "ko" ? sc.decision_ko : sc.decision_en)}</b>`;
     $("ego").textContent = T().ego(sc.ego_speed_kmh.toFixed(0), T().commands[sc.driving_command] || sc.driving_command);
     const box = $("cmpOpts");
     if (box.dataset.uid !== uid) {
@@ -541,41 +557,89 @@
   // A click on a GT agent (vehicle / pedestrian) selects it. Anything else is marked by dragging a box. A box that outlines
   // an agent (IoU >= BOX_SNAP_IOU) is snapped to that agent. Every mark keeps x, y (click point or box centre, original
   // image pixels) for the analysis; drawn boxes also keep `box` = [x0, y0, x1, y1].
-  const DRAG_START_PX = 5, MIN_BOX_PX = 4, BOX_SNAP_IOU = 0.3;
-  let drag = null;   // {view, img, sx, sy (client), p0 (image px), box (image px) | null}
+  // Touch (2026-11-20): a short tap selects, an immediate drag draws a box, a long press (HOLD_MS without moving) on the
+  // camera shows the magnifier and selects nothing; a second tap / click on an existing mark within DOUBLE_TAP_MS
+  // removes it (a single tap on it only says so, instead of adding the same object twice).
+  const DRAG_START_PX = 5, MIN_BOX_PX = 4, BOX_SNAP_IOU = 0.3, HOLD_MS = 350, DOUBLE_TAP_MS = 450;
+  let drag = null;     // {view, img, sx, sy, cx, cy (client), p0 (image px), box (image px) | null, touch, inspect, timer}
+  let lastTap = null;  // {idx, uid, t}: the first tap on an existing mark
   const imgOf = view => view === "camera" ? $("camImg") : $("bevImg");
-  function blocked(ev) {
-    if (replayTimer || tourIdx !== null) return true;
-    if (resp().clicks.length >= MAX_CLICKS) {
-      $("nextHint").textContent = T().clickFull; flash($("clickSec")); toast(T().clickFull, ev); return true;
+  const blocked = () => !!(replayTimer || tourIdx !== null);
+  function full(ev) {
+    if (resp().clicks.length < MAX_CLICKS) return false;
+    $("nextHint").textContent = T().clickFull; flash($("clickSec")); toast(T().clickFull, ev);
+    return true;
+  }
+  function markAt(view, x, y, img) {       // index of the mark under an image point of this view, or -1
+    const sc = cur(), r = resp(), s = img.clientWidth / img.naturalWidth;
+    for (let i = r.clicks.length - 1; i >= 0; i--) {
+      const c = r.clicks[i];
+      if (c.object_token) {                // an object mark is shown (and can be removed) in both views
+        const o = sc.objects.find(q => q.object_token === c.object_token);
+        if (o && (view === "camera" ? o.camera_rects.some(q => x >= q[0] && x <= q[2] && y >= q[1] && y <= q[3])
+                                     : window.AnnotCore.pointInPoly(x, y, o.bev_polygon))) return i;
+      } else if (c.view === view) {
+        if (c.box ? x >= c.box[0] && x <= c.box[2] && y >= c.box[1] && y <= c.box[3]
+                  : Math.hypot(x - c.x, y - c.y) * s < 14) return i;
+      }
     }
-    return false;
+    return -1;
   }
   function onDown(view, ev) {
     if (ev.button !== 0) return;
     const img = imgOf(view);
-    if (!img.naturalWidth || blocked(ev)) return;
+    if (!img.naturalWidth || blocked()) return;
     ev.preventDefault();
     hidePop();
-    ev.target.setPointerCapture(ev.pointerId);
-    drag = { view, img, sx: ev.clientX, sy: ev.clientY, p0: toImagePx(ev, img), box: null };
+    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* not capturable: the gesture still works */ }
+    drag = { view, img, sx: ev.clientX, sy: ev.clientY, cx: ev.clientX, cy: ev.clientY, p0: toImagePx(ev, img), box: null,
+             touch: ev.pointerType !== "mouse", inspect: false, timer: null };
+    if (drag.touch && view === "camera") {
+      const d = drag;
+      d.timer = setTimeout(() => {         // held still: magnifier only
+        if (drag !== d || d.box) return;
+        d.inspect = true;
+        drawLoupe({ clientX: d.cx, clientY: d.cy }, true);
+      }, HOLD_MS);
+    }
   }
   function onMove(ev) {
     if (!drag) return;
+    drag.cx = ev.clientX; drag.cy = ev.clientY;
+    if (drag.inspect) { drawLoupe(ev, true); return; }
     if (!drag.box && Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) < DRAG_START_PX) return;
+    clearTimeout(drag.timer);
+    if (resp().clicks.length >= MAX_CLICKS) return;               // full: nothing is drawn (said on release)
     const p = toImagePx(ev, drag.img);
     drag.box = normBox(drag.p0.x, drag.p0.y, p.x, p.y, drag.img.naturalWidth, drag.img.naturalHeight);
     drawOverlays();
+    if (drag.touch && drag.view === "camera") drawLoupe(ev, true);   // a finger hides what it draws around
   }
   function onUp(ev) {
     if (!drag) return;
     const d = drag; drag = null;
+    clearTimeout(d.timer);
+    if (d.touch) $("loupe").classList.add("hidden");
+    if (d.inspect) return;                                          // looked through the magnifier: no mark
     // decide click vs drag from the release point too (some input devices send no move events in between)
-    if (!d.box && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) >= DRAG_START_PX) {
+    if (!d.box && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) >= DRAG_START_PX && resp().clicks.length < MAX_CLICKS) {
       const p = toImagePx(ev, d.img);
       d.box = normBox(d.p0.x, d.p0.y, p.x, p.y, d.img.naturalWidth, d.img.naturalHeight);
     }
     const r = resp(), sc = cur();
+    if (!d.box && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) < DRAG_START_PX) {
+      const hit = markAt(d.view, d.p0.x, d.p0.y, d.img);
+      if (hit >= 0) {                                               // a tap on an existing mark
+        const now = performance.now(), uid = S.order[S.idx];
+        if (lastTap && lastTap.idx === hit && lastTap.uid === uid && now - lastTap.t < DOUBLE_TAP_MS) {
+          lastTap = null; removeClick(hit); toast(T().removed, ev); return;
+        }
+        lastTap = { idx: hit, uid, t: now }; toast(T().tapAgain, ev); return;
+      }
+    }
+    lastTap = null;
+    if (!d.box && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) >= DRAG_START_PX) { drawOverlays(); full(ev); return; }
+    if (full(ev)) { drawOverlays(); return; }
     let c;
     if (d.box) {
       const s = d.img.clientWidth / d.img.naturalWidth;          // image px -> screen px
@@ -603,7 +667,10 @@
     cv.addEventListener("pointerdown", ev => onDown(view, ev));
     cv.addEventListener("pointermove", onMove);
     cv.addEventListener("pointerup", onUp);
-    cv.addEventListener("pointercancel", () => { drag = null; drawOverlays(); });
+    cv.addEventListener("pointercancel", () => {
+      if (drag) clearTimeout(drag.timer);
+      drag = null; $("loupe").classList.add("hidden"); drawOverlays();
+    });
   });
   let toastTimer = null;
   function toast(text, ev) {
@@ -782,9 +849,9 @@
     $("loupeBtn").textContent = on ? T().loupeOn : T().loupeOff;
     if (!on) $("loupe").classList.add("hidden");
   }
-  function drawLoupe(ev) {
+  function drawLoupe(ev, force) {          // force: touch (long press or drawing a box), whatever the toggle says
     const img = $("camImg"), lp = $("loupe");
-    if (!loupeOn || replayTimer || tourIdx !== null || !img.naturalWidth) { lp.classList.add("hidden"); return; }
+    if (!(loupeOn || force) || replayTimer || tourIdx !== null || !img.naturalWidth) { lp.classList.add("hidden"); return; }
     const dpr = window.devicePixelRatio || 1;
     if (lp.width !== Math.round(LOUPE_W * dpr)) { lp.width = Math.round(LOUPE_W * dpr); lp.height = Math.round(LOUPE_H * dpr); }
     const p = toImagePx(ev, img);
@@ -809,9 +876,10 @@
     lp.style.left = `${x}px`; lp.style.top = `${y}px`;
     lp.classList.remove("hidden");
   }
-  $("camCanvas").addEventListener("pointermove", drawLoupe);         // after the drag handler: shows the box being drawn
-  $("camCanvas").addEventListener("pointerdown", drawLoupe);
-  $("camCanvas").addEventListener("pointerleave", () => $("loupe").classList.add("hidden"));
+  // mouse: the toggle shows the magnifier on hover (after the drag handler, so it shows the box being drawn)
+  $("camCanvas").addEventListener("pointermove", ev => { if (ev.pointerType === "mouse") drawLoupe(ev); });
+  $("camCanvas").addEventListener("pointerdown", ev => { if (ev.pointerType === "mouse") drawLoupe(ev); });
+  $("camCanvas").addEventListener("pointerleave", ev => { if (ev.pointerType === "mouse") $("loupe").classList.add("hidden"); });
   $("loupeBtn").addEventListener("click", () => setLoupe(!loupeOn));
 
   // ------------------------------------------------------------ navigation
@@ -967,8 +1035,8 @@
     $("retryBtn").classList.toggle("hidden", finalState !== "failed");
   }
   $("retryBtn").addEventListener("click", () => { fails = 0; setFinal("sending"); clearTimeout(retryTimer); flush(); });
-  $("backBtn").addEventListener("click", () => {
-    if (S.phase === 2) S.cmp_idx = CMP.length - 1; else S.idx = S.order.length - 1;
+  $("backBtn").addEventListener("click", () => {           // to the first item still open (stage 1 is locked in stage 2)
+    if (S.phase === 2) S.cmp_idx = 0; else S.idx = 0;
     S.at_survey = false;
     save();
     $("done").classList.add("hidden"); $("task").classList.remove("hidden"); renderScene();

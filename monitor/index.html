@@ -534,7 +534,7 @@ td.hit { text-align: center; }
       return { u, grp, mj, used, hits: Object.fromEntries(M.map(m => [m, used ? hitOf(SC[u], mj.label, m) : null])) };
     });
     const groupsDef = [["전체", r => true], ["성공 장면", r => r.grp === "A"], ["실패 장면", r => r.grp === "B"]];
-    $("hitGroups").innerHTML = groupsDef.map(([name, f]) => {
+    $("hitGroups").innerHTML = groupsDef.filter(([, f]) => rows.some(f)).map(([name, f]) => {
       const rs = rows.filter(f), used = rs.filter(r => r.used);
       const bars = M.map(m => { const h = used.filter(r => r.hits[m]).length; return [m, h, used.length]; });
       return `<div><h3>${name} · 다수결 ${used.length} / ${rs.length}장면</h3>${mbars(bars, L, COL)}</div>`;

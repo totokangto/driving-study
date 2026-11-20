@@ -229,3 +229,25 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .cmpopts { gap: 6px; }
 .cmprow { padding: 4px 6px; }
 @media (max-width: 1000px) { #cmpSec { --u: calc((100vw - 110px) / 4); } }
+
+/* ------------------------------------------------------------ phones (2026-11-20) */
+.notice.phone { font-size: 16px; font-weight: 600; border: 2px solid #f59e0b; padding: 12px 14px; line-height: 1.5; }
+.rotate { position: sticky; top: var(--bar); z-index: 6; background: #fef3c7; color: #92400e; font-weight: 600; font-size: 14px;
+  text-align: center; padding: 8px 12px; border-bottom: 1px solid #fcd34d; }
+.holdhint { font-size: 12px; font-weight: 500; color: var(--muted); }
+@media (hover: none) { .keys { display: none !important; } }
+@media (max-width: 1000px) {
+  /* Back / Next always reachable: a bar fixed to the bottom of the screen */
+  .side .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; margin: 0; padding: 8px 12px;
+    background: var(--card); border-top: 1px solid var(--line); box-shadow: 0 -4px 14px rgba(0,0,0,.08); }
+  .taskgrid { padding-bottom: 84px; }
+}
+.langbtn { white-space: nowrap; }
+/* phones: the decision stays in view while scrolling (the full box sits below the pictures there) */
+.decmini { display: none; }
+@media (max-width: 1000px) {
+  .decmini { display: block; position: sticky; top: var(--bar); z-index: 6; background: var(--accent-soft); color: #1e3a8a;
+    font-size: 14px; padding: 6px 14px; border-bottom: 1px solid #c7d7fb; }
+  .decmini b { color: var(--accent); font-size: 16px; }
+  .rotate { top: calc(var(--bar) + 31px); }
+}

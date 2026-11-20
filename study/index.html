@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Driving Decision Study</title>
-<link rel="stylesheet" href="style.css?v=503daaf0f6">
+<link rel="stylesheet" href="style.css?v=dbf9f0d189">
 </head>
 <body>
 <!-- ============================================================ start -->
@@ -15,7 +15,7 @@
       <div class="lang"><button data-lang="ko" class="langbtn">한국어</button><button data-lang="en" class="langbtn">English</button></div>
     </div>
     <p class="lead" data-t="lead"></p>
-    <p id="smallScreen" class="notice hidden" data-t="smallScreen"></p>
+    <p id="smallScreen" class="notice phone hidden" data-t="smallScreen"></p>
 
     <ol class="steps" id="steps">
       <li class="step">
@@ -90,6 +90,8 @@
     <span id="syncBadge" class="sync hidden"></span>
     <button id="helpBtn" class="ghost small" data-t="help"></button>
   </header>
+  <div id="rotateHint" class="rotate hidden" data-t="rotate"></div>
+  <div id="decMini" class="decmini" aria-hidden="true"></div>
   <main class="taskgrid">
     <div class="views">
       <section class="view p2" id="cmpSec">
@@ -101,6 +103,7 @@
         <div class="viewhead"><span data-t="camera"></span>
           <button id="replayBtn" class="ghost small" data-t="replay"></button>
           <button id="loupeBtn" class="ghost small" aria-pressed="false"></button>
+          <span id="holdHint" class="holdhint hidden" data-t="holdHint"></span>
           <span id="replayLabel" class="replaylabel"></span></div>
         <div class="imgwrap" id="camWrap"><img id="camImg" alt=""><canvas id="camCanvas"></canvas>
           <div class="camlabels" aria-hidden="true"><span style="left:13.28%" data-t="camL"></span><span style="left:50%" data-t="camF"></span><span style="left:86.72%" data-t="camR"></span></div></div>
@@ -233,8 +236,8 @@
 <canvas id="loupe" class="loupe hidden" width="300" height="180" aria-hidden="true"></canvas>
 
 <script src="config.js?v=2608ae7cce"></script>
-<script src="data/manifest.js?v=340e13a967"></script>
+<script src="data/manifest.js?v=b516b94c16"></script>
 <script src="core.js?v=fc119a5aee"></script>
-<script src="app.js?v=2912edc018"></script>
+<script src="app.js?v=9738ba0849"></script>
 </body>
 </html>
