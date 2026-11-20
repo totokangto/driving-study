@@ -226,6 +226,12 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .cmprow .cam2 .camlabels span { font-size: 10px; padding: 3px 6px; top: 4px; }
 .cmprow .lidar { line-height: 0; border-radius: 5px; overflow: hidden; outline: 2px solid #0e7490; outline-offset: -2px; }
 .s2note { font-size: 13px; color: #0e7490; background: #ecfeff; border-radius: 8px; padding: 6px 10px; margin: 0 0 8px; }
+/* stage-2 colour legend (D-16): the same rank colours as prepare/overlay.py STOPS */
+.s2leg { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 400; font-size: 12px; color: #374151; flex-wrap: wrap; }
+.s2leg .grad { display: inline-block; width: 120px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.15);
+  background: linear-gradient(90deg, rgb(250,225,40), rgb(212,181,108) 25%, rgb(175,136,133) 50%, rgb(141,90,146) 75%, rgb(110,30,150)); }
+.s2leg .lo, .s2leg .hi { font-weight: 600; }
+.s2leg > span:first-child { margin-right: 4px; }
 /* stage 2: all three options must be visible without scrolling (an option below the fold would bias the choice).
    --u = LiDAR side = row height; the camera gets 3u wide (0.75u high), so LiDAR is a third of the camera's width. */
 /* the row needs 4u + 70 px (letter column, gaps, padding, border). Measured on the section itself where the browser has
