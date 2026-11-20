@@ -18,7 +18,7 @@
       holdHint: "🔍 길게 누르면 확대",
       ex1a: "올바른 판단:", ex1b: "정지",
       s1t: "판단 확인", s1d: "화면의 파란 칸에 이 장면의 올바른 운전 판단이 나옵니다.",
-      s2t: "근거 표시", s2d: "꼭 봐야 하는 대상을 고르세요. 차량·보행자는 클릭, 신호등·표지판·정지선 같은 것은 드래그해서 박스를 그립니다. 중요한 순서로 최대 3개.",
+      s2t: "근거 표시", s2d: "꼭 봐야 하는 대상을 고르세요. 차량·보행자는 클릭, 신호등·표지판·정지선 같은 것은 드래그해서 박스를 그립니다. 근거가 되는 것을 최대 3개, 순서는 상관없습니다.",
       s3t: "종류 · 확신도 → 다음", s3d: "대상 종류와 확신 정도를 고르고 '다음'을 누르세요.",
       cVehicle: "차량", cPed: "보행자", cEtc: "기타", illClick: "클릭", illDrag: "드래그",
       keynote: "정답은 없습니다. 내가 운전자라면 무엇을 보고 판단할지를 기준으로 골라 주세요.",
@@ -36,7 +36,7 @@
       decLabel: "이 장면의 올바른 운전 판단",
       ego: (v, c) => `현재 속도 ${v} km/h · 경로 안내: ${c}`,
       stagePractice: "연습", stageMain: "본 평가",
-      yourClicks: "근거 대상", clickHint: "차량·보행자는 클릭, 그 밖의 대상은 드래그로 박스를 그리세요.\n표시를 두 번 탭(더블클릭)하면 취소됩니다. 중요한 순서로 최대 3개.",
+      yourClicks: "근거 대상", clickHint: "차량·보행자는 클릭, 그 밖의 대상은 드래그로 박스를 그리세요.\n표시를 두 번 탭(더블클릭)하면 취소됩니다. 근거가 되는 것을 최대 3개, 순서는 상관없습니다.",
       clickFull: "최대 3개까지 고를 수 있습니다. 바꾸려면 ×를 누르거나 표시를 두 번 탭해서 지운 뒤 다시 고르세요.",
       viewCam: "카메라", viewBev: "지도", markObj: "대상", markBox: "그린 영역", catPlaceholder: "종류 선택…", del: "지우기",
       popHead: "이 대상은 무엇인가요? (숫자키 1–7)",
@@ -53,7 +53,7 @@
         "먼저 이 장면의 <b>올바른 운전 판단</b>이 무엇이었는지 확인하세요.",
         "<b>전방 카메라</b>입니다. 차량·보행자는 <b>클릭</b>, 신호등·표지판·정지선 같은 것은 <b>드래그해서 박스</b>를 그리세요. <b>직전 1.5초 재생</b>으로 다른 차가 움직이는지 볼 수 있습니다.",
         "<b>위에서 내려다본 지도</b>입니다. 자율주행 모델이 <b>LiDAR</b>로 보는 주변 영역(앞뒤·좌우 32 m)이고, 초록색이 내 차, 위쪽이 진행 방향입니다. 지도에서 표시해도 됩니다.",
-        "클릭한 대상이 <b>중요한 순서대로</b> 여기에 쌓입니다(최대 3개). 종류를 고르고, 잘못 찍었으면 ×를 누르거나 그 표시를 <b>두 번 탭(더블클릭)</b>하세요. 근거가 되는 특정 대상이 없으면 <b>특정 대상 없음</b>을 고릅니다.",
+        "표시한 대상이 여기에 쌓입니다(최대 3개, <b>순서는 상관없습니다</b>). 번호는 그림의 표시와 목록을 이어 주는 이름일 뿐입니다. 종류를 고르고, 잘못 찍었으면 ×를 누르거나 그 표시를 <b>두 번 탭(더블클릭)</b>하세요. 근거가 되는 특정 대상이 없으면 <b>특정 대상 없음</b>을 고릅니다.",
         "얼마나 <b>확신</b>하는지 고르세요.",
         "다 골랐으면 <b>다음</b>. 지금은 연습 장면이니 직접 해 보세요!"
       ],
@@ -96,7 +96,7 @@
       holdHint: "🔍 Press and hold to zoom",
       ex1a: "Correct decision:", ex1b: "stop",
       s1t: "Read the decision", s1d: "The correct driving decision for the scene is shown in the blue box.",
-      s2t: "Mark the reasons", s2d: "Mark what a driver must see. Click vehicles and pedestrians; drag a box around anything else (lights, signs, stop lines). Most important first, up to 3.",
+      s2t: "Mark the reasons", s2d: "Mark what a driver must see. Click vehicles and pedestrians; drag a box around anything else (lights, signs, stop lines). Up to 3 reasons, in any order.",
       s3t: "Type · confidence → Next", s3d: "Choose the object type and your confidence, then press Next.",
       cVehicle: "Vehicle", cPed: "Pedestrian", cEtc: "Other", illClick: "click", illDrag: "drag",
       keynote: "There is no single correct choice. Pick what you would look at if you were driving.",
@@ -114,7 +114,7 @@
       decLabel: "Correct driving decision",
       ego: (v, c) => `Speed ${v} km/h · Route: ${c}`,
       stagePractice: "Practice", stageMain: "Study",
-      yourClicks: "Reasons", clickHint: "Click vehicles and pedestrians; drag a box around anything else.\nDouble-tap (double-click) a mark to remove it. Most important first, up to 3.",
+      yourClicks: "Reasons", clickHint: "Click vehicles and pedestrians; drag a box around anything else.\nDouble-tap (double-click) a mark to remove it. Up to 3 reasons, in any order.",
       clickFull: "Up to 3 reasons. To change one, remove it with × or by double-tapping it, then mark again.",
       viewCam: "Camera", viewBev: "Map", markObj: "object", markBox: "drawn box", catPlaceholder: "Choose type…", del: "Remove",
       popHead: "What is it? (keys 1–7)",
@@ -131,7 +131,7 @@
         "First, check what the <b>correct driving decision</b> was in this scene.",
         "The <b>front camera</b>. <b>Click</b> vehicles and pedestrians; <b>drag a box</b> around lights, signs, stop lines and the like. <b>Replay last 1.5 s</b> shows whether other road users move.",
         "The <b>top-down map</b>: the area around the car (32 m each way) that the driving model sees with <b>LiDAR</b>. Green is our car, up is the driving direction. You can mark here too.",
-        "Your clicks stack up here, <b>most important first</b> (up to 3). Choose a type for each; remove a wrong one with × or by <b>double-tapping</b> it. If no specific object is the reason, choose <b>No specific object</b>.",
+        "Your marks stack up here (up to 3, <b>in any order</b>). The numbers only link each mark to its row. Choose a type for each; remove a wrong one with × or by <b>double-tapping</b> it. If no specific object is the reason, choose <b>No specific object</b>.",
         "Choose how <b>confident</b> you are.",
         "Then press <b>Next</b>. This is a practice scene, so try it now!"
       ],
@@ -648,6 +648,7 @@
       }
       const o = snapBox(sc.objects, d.view, d.box, BOX_SNAP_IOU);
       const box = d.box.map(v => +v.toFixed(1));
+      // rank = the order the marks were made in (kept in the result format; not an importance order since 2026-11-20, D-15)
       c = { rank: r.clicks.length + 1, view: d.view, x: +((box[0] + box[2]) / 2).toFixed(1), y: +((box[1] + box[3]) / 2).toFixed(1),
             box, object_token: o ? o.object_token : null, category: o ? guessCat(o) : null };
     } else {

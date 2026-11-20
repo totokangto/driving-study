@@ -187,7 +187,7 @@ td.hit { text-align: center; }
 
     <div class="card">
       <h2>장면</h2>
-      <p class="sub">일치도 = 1순위 표시 중 가장 많이 나온 대상(같은 GT 객체 또는 같은 센서 영역, "특정 대상 없음" 포함)의 비율. 과반이면 다수결 근거가 생깁니다. 낮은 장면은 평가자가 헷갈리는 장면일 수 있습니다.</p>
+      <p class="sub">일치도 = 가장 많이 표시된 대상(같은 GT 객체 또는 같은 센서 영역, "특정 대상 없음" 포함)을 표시한 사람의 비율. 한 사람이 최대 3개를 순서 없이 고르므로 그중 하나라도 같으면 같은 대상을 고른 것으로 셉니다. 낮은 장면은 평가자가 헷갈리는 장면일 수 있습니다.</p>
       <div class="tablewrap"><table id="sceneTable"></table></div>
     </div>
 
@@ -268,14 +268,15 @@ td.hit { text-align: center; }
     return [...m.values()];
   }
   const ts = r => Date.parse(r.received_at) || 0;
-  // rank-1 label: GT object token, else the sensor region under the mark (camera 64 px tiles, BEV 8 m cells), or NONE
-  function label1(resp) {
-    if (!resp || resp.no_specific_target) return "NONE";
-    const c = (resp.clicks || []).slice().sort((a, b) => a.rank - b.rank)[0];
-    if (!c) return null;
-    if (c.object_token) return "obj:" + c.object_token;
-    if (c.view === "camera") return "cam:" + (Math.floor(c.y / 64) * 32 + Math.floor(c.x / 64));
-    return "bev:" + (256 + (7 - Math.floor(c.y / 64)) * 8 + (7 - Math.floor(c.x / 64)));
+  // labels of a response (all marks, no order; D-15): GT object token, else the sensor region under the mark
+  // (camera 64 px tiles, BEV 8 m cells); ["NONE"] for "no specific object"; null when there is no response
+  function labelsQ(resp) {
+    if (!resp) return null;
+    if (resp.no_specific_target) return ["NONE"];
+    const out = new Set((resp.clicks || []).map(c => c.object_token ? "obj:" + c.object_token
+      : c.view === "camera" ? "cam:" + (Math.floor(c.y / 64) * 32 + Math.floor(c.x / 64))
+      : "bev:" + (256 + (7 - Math.floor(c.y / 64)) * 8 + (7 - Math.floor(c.x / 64)))));
+    return out.size ? [...out] : null;
   }
   const median = a => { if (!a.length) return NaN; const s = a.slice().sort((x, y) => x - y), k = s.length >> 1; return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; };
 
@@ -365,10 +366,14 @@ td.hit { text-align: center; }
     const uids = M ? M.scenes.map(s => s.scene_uid) : Object.keys(byScene);
     const rows = uids.map(u => {
       const rs = byScene[u] || [];
-      const labs = rs.map(label1).filter(Boolean);
-      const cnt = {}; labs.forEach(l => { cnt[l] = (cnt[l] || 0) + 1; });
+      const labs = rs.map(labelsQ).filter(Boolean);
+      const cnt = {}; labs.forEach(s => s.forEach(l => { cnt[l] = (cnt[l] || 0) + 1; }));
       const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
-      const cats = {}; rs.forEach(r => { const c = (r.clicks || []).slice().sort((a, b) => a.rank - b.rank)[0]; const k = r.no_specific_target ? "대상 없음" : c && c.category; if (k) cats[k] = (cats[k] || 0) + 1; });
+      const cats = {};
+      rs.forEach(r => {
+        if (r.no_specific_target) { cats["대상 없음"] = (cats["대상 없음"] || 0) + 1; return; }
+        (r.clicks || []).forEach(c => { if (c.category) cats[c.category] = (cats[c.category] || 0) + 1; });
+      });
       const topCat = Object.entries(cats).sort((a, b) => b[1] - a[1])[0];
       return { u, kind: KIND[kindOf[u]] || "", dec: decOf[u] || "", n: rs.length, med: median(rs.map(r => +r.time_spent_sec || 0)),
                none: rs.length ? rs.filter(r => r.no_specific_target).length / rs.length : NaN,
@@ -377,8 +382,8 @@ td.hit { text-align: center; }
     });
     table($("sceneTable"), [
       ["장면", r => r.u], ["종류", r => r.kind], ["판단", r => r.dec], ["응답", r => r.n, r => r.n, true],
-      ["일치도", r => r.agree, r => isNaN(r.agree) ? "–" : `<div style="display:flex;gap:8px;align-items:center"><div class="meter" style="flex:1" data-tip="1순위 일치 ${pct(r.agree)}"><div style="width:${100 * r.agree}%"></div></div><span style="font-variant-numeric:tabular-nums;width:38px;text-align:right">${pct(r.agree)}</span></div>`],
-      ["다수결", r => r.maj ? 1 : 0, r => r.n ? (r.maj ? "있음" : `<span class="flag warn"><span class="ic">!</span>없음</span>`) : "–"],
+      ["일치도", r => r.agree, r => isNaN(r.agree) ? "–" : `<div style="display:flex;gap:8px;align-items:center"><div class="meter" style="flex:1" data-tip="가장 많이 표시된 대상을 고른 사람 ${pct(r.agree)}"><div style="width:${100 * r.agree}%"></div></div><span style="font-variant-numeric:tabular-nums;width:38px;text-align:right">${pct(r.agree)}</span></div>`],
+      ["과반이 고른 대상", r => r.maj ? 1 : 0, r => r.n ? (r.maj ? "있음" : `<span class="flag warn"><span class="ic">!</span>없음</span>`) : "–"],
       ["가장 많은 종류", r => r.cat], ["대상 없음", r => r.none, r => pct(r.none), true], ["중앙값(초)", r => r.med, r => num(r.med, 1), true]
     ], rows, "sceneSort", ["일치도", 1]);
 
@@ -395,8 +400,8 @@ td.hit { text-align: center; }
   }
 
   // ---------------------------------------------------------------- interim results by method (needs key.json)
-  // Same rules as analysis/: agreement.py (click label, rank-1 label, majority, check-scene exclusion) and coverage.py
-  // (stage 1 score since 2026-11-20). hitOf (the earlier centre rule) is no longer shown.
+  // Same rules as analysis/: agreement.py (mark labels, label sets, consensus, check-scene exclusion) and coverage.py
+  // (stage 1 score: every mark counts the same, no order; D-14, D-15).
   // Annotators: those who finished (a finals row), minus those failing the check scenes.
   let KEY = null, CUR = null;
   const UNMAP = "UNMAPPABLE";
@@ -422,21 +427,6 @@ td.hit { text-align: center; }
     else { const cell = bevCellOf(c.x, c.y); rid = cell ? 256 + cell[0] * 8 + cell[1] : null; }
     return rid === null ? UNMAP : "region:" + rid;
   }
-  const firstMark = r => r.clicks.slice().sort((a, b) => a.rank - b.rank)[0];
-  function rank1(r, grp) {
-    if (!r || (!(r.clicks || []).length && !r.no_specific_target)) return null;
-    if (r.no_specific_target) return "NONE";
-    return clickLabel(firstMark(r), grp);
-  }
-  function majorityOf(labels) {
-    const votes = labels.filter(v => v !== null && v !== UNMAP);
-    if (!votes.length) return { label: null, n: 0, top: 0 };
-    const cnt = new Map();
-    votes.forEach(v => cnt.set(v, (cnt.get(v) || 0) + 1));
-    let best = null, bc = 0;
-    cnt.forEach((c, v) => { if (c > bc) { best = v; bc = c; } });
-    return { label: bc > votes.length / 2 ? best : null, n: votes.length, top: bc };
-  }
   function inPoly(x, y, poly) {
     let inside = false;
     for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -445,20 +435,7 @@ td.hit { text-align: center; }
     }
     return inside;
   }
-  function hitOf(sc, label, m) {                             // hit_rate.label_hit
-    if (label === null || label === "NONE" || label === UNMAP) return null;
-    const mon = sc.monitor, set = mon.sets[m] || [];
-    const [kind, v] = [label.slice(0, label.indexOf(":")), label.slice(label.indexOf(":") + 1)];
-    const cellIn = cell => set.some(q => q[0] === cell[0] && q[1] === cell[1]);
-    if (kind === "obj") {
-      const o = mon.objects[v];
-      if (!o) return false;
-      if (mon.grp === "A") return o.regions.some(r => set.includes(r));
-      return !!o.cell && cellIn(o.cell);
-    }
-    if (kind === "region") return set.includes(+v);
-    return cellIn(v.split(",").map(Number));
-  }
+
 
   // ---- coverage.py: share of the target's area inside the method's selected regions, per sensor
   function regionSquare(rid) {                               // coverage.region_square
@@ -518,19 +495,20 @@ td.hit { text-align: center; }
     const box = c.box || sq;
     return sensor === "camera" ? { camera: [box], lidar: null } : { camera: null, lidar: rectPoly(box) };
   }
-  function majorityTargets(sc, u, label, resps) {            // coverage.majority_targets
-    if (label === null || label === "NONE" || label === UNMAP) return [];
-    if (label.startsWith("obj:")) return [markTarget(sc, { object_token: label.slice(4) })];
-    const out = [];
-    resps.forEach(r => {
-      const x = r && r[u];
-      if (!x || x.no_specific_target || !(x.clicks || []).length) return;
-      const c = firstMark(x);
-      if (!c.object_token && clickLabel(c, "A") === label) out.push(markTarget(sc, c));
-    });
-    return out;
+  function labelSetA(r, grp) {                               // agreement.label_set
+    if (!r || (!(r.clicks || []).length && !r.no_specific_target)) return null;
+    if (r.no_specific_target) return ["NONE"];
+    const s = new Set(r.clicks.map(c => clickLabel(c, grp)).filter(v => v !== UNMAP));
+    return s.size ? [...s] : null;
   }
-  function targetCov(targets, regs) {                        // coverage.target_coverage
+  function consensusOf(sets) {                               // agreement.consensus
+    const n = sets.length, nNone = sets.filter(s => s.includes("NONE")).length;
+    if (!n) return { n: 0, noneMaj: false, top: null, k: 0, share: NaN };
+    const cnt = new Map(); sets.forEach(s => s.forEach(v => cnt.set(v, (cnt.get(v) || 0) + 1)));
+    let top = null, k = 0; cnt.forEach((c, v) => { if (c > k) { top = v; k = c; } });
+    return { n, noneMaj: nNone > n / 2, top, k, share: k / n };
+  }
+  function targetCov(targets, regs) {                        // coverage.marks_coverage (one annotator's marks)
     const out = {};
     [["camera", camCov], ["lidar", lidCov]].forEach(([s, f]) => {
       const v = targets.filter(t => t[s]).map(t => f(t[s], regs)).filter(x => x !== null);
@@ -589,10 +567,9 @@ td.hit { text-align: center; }
         const r = (resp[a] || {})[u], ck = v.monitor.check;
         let ok = false;
         if (r && (r.clicks || []).length && !r.no_specific_target) {
-          const c = firstMark(r);
-          if (c.object_token === ck.token) ok = true;
-          else if (c.view === "camera") ok = ck.camera_rects.some(q => q[0] <= c.x && c.x <= q[2] && q[1] <= c.y && c.y <= q[3]);
-          else ok = ck.bev_polygon.length > 0 && inPoly(c.x, c.y, ck.bev_polygon);
+          ok = r.clicks.some(c => c.object_token === ck.token ||
+            (c.view === "camera" ? ck.camera_rects.some(q => q[0] <= c.x && c.x <= q[2] && q[1] <= c.y && c.y <= q[3])
+                                 : ck.bev_polygon.length > 0 && inPoly(c.x, c.y, ck.bev_polygon)));
         }
         if (!ok) fails++;
       });
@@ -604,34 +581,43 @@ td.hit { text-align: center; }
     const foreign = CUR.scenes.filter(r => done.has(String(r.annotator_id)) && !SC[(r.response || {}).scene_uid]).length;
     $("resBanner").innerHTML = (useExcl
       ? `<b>중간 결과</b> · 끝까지 마친 ${done.size}명 중 확인 장면을 통과한 <b>${inc.length}명</b> 기준` +
-        (excluded.size ? ` (제외 ${excluded.size}명 — ${[...excluded].map(a => esc(why[a])).join(", ")}. 확인 장면에서 "특정 대상 없음"이나 다른 대상을 1순위로 고르면 놓친 것으로 셉니다)` : "")
+        (excluded.size ? ` (제외 ${excluded.size}명 — ${[...excluded].map(a => esc(why[a])).join(", ")}. 확인 장면에서 표시 중에 기대한 대상이 없거나 "특정 대상 없음"을 고르면 놓친 것으로 셉니다)` : "")
       : `<b>시험용: 제외 규칙 꺼짐</b> · 끝까지 마친 <b>${done.size}명</b> 모두 포함` +
         (excluded.size ? ` (규칙을 켜면 제외될 사람 — ${[...excluded].map(a => esc(why[a])).join(", ")})` : "")) +
       ` · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 report.py 결과를 씁니다.` +
       (foreign ? `<br><b>⚠ 완료자 응답 중 ${foreign}개는 이 key에 없는 장면입니다.</b> 사이트를 다시 빌드하기 전에 모은 데이터라 이 key로는 계산할 수 없습니다(그 사람은 확인 장면이 비어 제외될 수 있음).` : "");
     $("resLegend").innerHTML = M.map(m => `<span><i style="background:${COL(m)}"></i>${esc(L(m))}</span>`).join("");
 
-    // stage 1: majority per main scene, coverage per method (coverage.py)
+    // stage 1: per scene, for each annotator the mean coverage of their marks, then the mean over annotators (coverage.py)
     const mainU = Object.keys(SC).filter(u => SC[u].kind === "main" && SC[u].monitor && SC[u].monitor.sets);
-    const incResps = inc.map(a => resp[a] || {});
     const oldKey = mainU.some(u => Object.values(SC[u].monitor.objects || {}).some(o => !o.rects));
+    const avg = a => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
     const rows = mainU.map(u => {
-      const grp = SC[u].monitor.grp;
-      const mj = majorityOf(inc.map(a => rank1((resp[a] || {})[u], grp)));
-      const tg = majorityTargets(SC[u], u, mj.label, incResps);
+      const sets = inc.map(a => labelSetA((resp[a] || {})[u], SC[u].monitor.grp)).filter(s => s !== null);
+      const cs = consensusOf(sets);
       const cov = Object.fromEntries(M.map(m => {
-        const regs = SC[u].monitor.sets[m] || [];
-        return [m, { ...targetCov(tg, regs), chance: chanceOf(regs) }];
+        const regs = SC[u].monitor.sets[m] || [], o = { chance: chanceOf(regs) };
+        ["camera", "lidar"].forEach(s => {
+          const per = [];
+          if (!cs.noneMaj) inc.forEach(a => {
+            const x = (resp[a] || {})[u];
+            if (!x || x.no_specific_target || !(x.clicks || []).length) return;
+            const v = targetCov(x.clicks.map(c => markTarget(SC[u], c)), regs)[s];
+            if (v !== null) per.push(v);
+          });
+          o[s] = avg(per);
+        });
+        return [m, o];
       }));
-      return { u, grp, concept: SC[u].monitor.concept, mj, cov };
+      return { u, grp: SC[u].monitor.grp, concept: SC[u].monitor.concept, cs, cov };
     });
     const groupsDef = [["전체", r => true], ["정지", r => r.concept === "stop"], ["감속", r => r.concept === "decelerate"]];
     const mean = a => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN);
     const block = s => groupsDef.filter(([, f]) => rows.some(f)).map(([name, f]) => {
       const rs = rows.filter(f), used = rs.filter(r => r.cov[M[0]][s] !== null);
       const bars = M.map(m => [m, mean(used.map(r => r.cov[m][s])), used.length, mean(used.map(r => r.cov[m].chance[s]))]);
-      const nMaj = rs.filter(r => r.mj.label !== null).length;
-      return `<div><h3>${name} · 계산된 장면 ${used.length} / ${rs.length} <span class="small">(다수결 ${nMaj})</span></h3>${cbars(bars, L, COL)}</div>`;
+      const nNone = rs.filter(r => r.cs.noneMaj).length;
+      return `<div><h3>${name} · 계산된 장면 ${used.length} / ${rs.length}${nNone ? ` <span class="small">("특정 대상 없음" 과반 ${nNone})</span>` : ""}</h3>${cbars(bars, L, COL)}</div>`;
     }).join("");
     $("hitGroups").innerHTML = (oldKey ? `<p class="small" style="grid-column:1/-1;color:var(--warn)">이 브라우저에 기억된 key가 예전 형식이라 덮은 비율을 계산할 수 없습니다. "이 브라우저에서 key 잊기"를 누르고 key.json을 다시 열어 주세요.</p>` : "") + block("camera");
     $("lidGroups").innerHTML = block("lidar");
@@ -659,13 +645,13 @@ td.hit { text-align: center; }
     $("prefGroups").innerHTML = `<div><h3>전체</h3>${mbars(shareBars, L, COL)}</div><div style="grid-column:span 2">${vs}</div>`;
 
     // per scene
-    const lab = l => (l === null ? "다수결 없음" : l === "NONE" ? "특정 대상 없음" : l.startsWith("obj:") ? "객체" : l.startsWith("cell:") ? "BEV 칸" : "영역");
+    const lab = l => (l === null ? "–" : l === "NONE" ? "특정 대상 없음" : l.startsWith("obj:") ? "객체" : l.startsWith("cell:") ? "BEV 칸" : "영역");
     table($("resTable"), [
       ["장면", r => r.u], ["판단", r => (r.concept === "stop" ? "정지" : r.concept === "decelerate" ? "감속" : "–")],
-      ["다수결", r => r.mj.label === null ? 0 : 1, r => `${lab(r.mj.label)} <span class="small">${r.mj.top}/${r.mj.n}</span>`],
+      ["가장 많이 표시", r => r.cs.share, r => r.cs.n ? `${lab(r.cs.top)} <span class="small">${r.cs.k}/${r.cs.n}</span>` : "–"],
       ...M.map(m => [`${L(m)} (카메라)`, r => (r.cov[m].camera === null ? -1 : r.cov[m].camera),
         r => r.cov[m].camera === null ? "–" : `${pct(r.cov[m].camera)} <span class="small">기대 ${pct(r.cov[m].chance.camera)}</span>`, true])
-    ], rows, "resSort", ["다수결", 0]);
+    ], rows, "resSort", ["가장 많이 표시", 0]);
     $("resBody").classList.remove("hidden");
   }
   function cbars(items, L, COL) {                            // [method, mean, n, chance]; mean coverage with the chance mark
