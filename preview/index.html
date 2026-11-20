@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Driving Decision Study</title>
-<link rel="stylesheet" href="style.css?v=86f03bfa9a">
+<link rel="stylesheet" href="style.css?v=503daaf0f6">
 </head>
 <body>
 <!-- ============================================================ start -->
@@ -54,7 +54,7 @@
       <li class="step">
         <div class="ill ill3">
           <div class="mockchips"><span class="chip on" data-t="cVehicle"></span><span class="chip" data-t="cPed"></span><span class="chip" data-t="cEtc"></span></div>
-          <div class="mockseg"><span data-t="certain"></span><span class="on" data-t="moderate"></span><span data-t="unsure"></span></div>
+          <div class="mockseg"><span data-t="unsure"></span><span data-t="moderate"></span><span class="on" data-t="certain"></span></div>
           <div class="mocknext" data-t="next"></div>
         </div>
         <div class="stepnum">3</div>
@@ -74,7 +74,9 @@
         <button id="startBtn" class="primary big" disabled data-t="start"></button>
       </div>
       <p id="idHint" class="hint" data-t="idHint"></p>
+      <p class="hint" data-t="idResumeNote"></p>
       <p id="resumeNote" class="resume hidden"></p>
+      <p id="idTaken" class="taken hidden"></p>
     </div>
   </div>
 </div>
@@ -92,6 +94,7 @@
     <div class="views">
       <section class="view p2" id="cmpSec">
         <div class="viewhead"><span data-t="s2Head"></span></div>
+        <p class="s2note" data-t="s2Both"></p>
         <div id="cmpOpts" class="cmpopts" role="radiogroup"></div>
       </section>
       <section class="view p1" id="camSec">
@@ -99,7 +102,8 @@
           <button id="replayBtn" class="ghost small" data-t="replay"></button>
           <button id="loupeBtn" class="ghost small" aria-pressed="false"></button>
           <span id="replayLabel" class="replaylabel"></span></div>
-        <div class="imgwrap" id="camWrap"><img id="camImg" alt=""><canvas id="camCanvas"></canvas></div>
+        <div class="imgwrap" id="camWrap"><img id="camImg" alt=""><canvas id="camCanvas"></canvas>
+          <div class="camlabels" aria-hidden="true"><span style="left:13.28%" data-t="camL"></span><span style="left:50%" data-t="camF"></span><span style="left:86.72%" data-t="camR"></span></div></div>
       </section>
       <section class="view bevsec p1" id="bevSec">
         <div class="viewhead"><span data-t="bev"></span></div>
@@ -133,12 +137,13 @@
         <p id="clickEmpty" class="empty" data-t="clickHint"></p>
         <label class="none"><input type="checkbox" id="noneBox"> <span data-t="none"></span></label>
       </div>
+      <p class="keys p1" data-t="keys"></p>
       <div class="sidesec p1" id="confSec">
         <h3 data-t="confidence"></h3>
         <div class="seg" id="conf" role="radiogroup">
-          <label><input type="radio" name="conf" value="certain"><span data-t="certain"></span></label>
-          <label><input type="radio" name="conf" value="moderate"><span data-t="moderate"></span></label>
           <label><input type="radio" name="conf" value="unsure"><span data-t="unsure"></span></label>
+          <label><input type="radio" name="conf" value="moderate"><span data-t="moderate"></span></label>
+          <label><input type="radio" name="conf" value="certain"><span data-t="certain"></span></label>
         </div>
       </div>
       <div class="sidesec nav">
@@ -146,7 +151,6 @@
         <button id="nextBtn" class="primary big" data-t="next"></button>
       </div>
       <p id="nextHint" class="nexthint"></p>
-      <p class="keys p1" data-t="keys"></p>
       <p class="keys p2" data-t="keys2"></p>
     </aside>
   </main>
@@ -230,8 +234,8 @@
 <canvas id="loupe" class="loupe hidden" width="300" height="180" aria-hidden="true"></canvas>
 
 <script src="config.js?v=2608ae7cce"></script>
-<script src="data/manifest.js?v=a38145fb14"></script>
+<script src="data/manifest.js?v=09b7375593"></script>
 <script src="core.js?v=fc119a5aee"></script>
-<script src="app.js?v=ca31b4e831"></script>
+<script src="app.js?v=bc13b43e29"></script>
 </body>
 </html>

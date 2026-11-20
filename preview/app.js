@@ -20,13 +20,15 @@
       cVehicle: "차량", cPed: "보행자", cEtc: "기타", illClick: "클릭", illDrag: "드래그",
       keynote: "정답은 없습니다. 내가 운전자라면 무엇을 보고 판단할지를 기준으로 골라 주세요.",
       meta: (p, n, min) => [p ? `연습 ${p}개 + 본 평가 ${n}개` : `${n}개 장면`, `약 ${min}분`, "진행 상황 자동 저장", "언제든 '도움말'로 다시 보기"],
-      idLabel: "평가자 ID", idHint: "영문과 숫자만 입력할 수 있습니다 (예: A01). 연구자에게 받은 ID를 입력하세요.",
+      idLabel: "평가자 ID", idHint: "영문과 숫자만 입력할 수 있습니다 (예: A01).",
+      idResumeNote: "한 번 입력한 ID로 다시 들어오면 이어서 할 수 있습니다 (같은 PC·같은 브라우저). 처음 참여하는데 이어서 한다는 안내가 나오면 이미 다른 사람이 쓰는 ID이니 다른 ID를 입력해 주세요.",
+      idTaken: "이 ID는 이미 다른 기기에서 쓰였습니다. 처음 참여한다면 다른 ID를 입력해 주세요. 전에 다른 기기에서 진행했다면 그 기기에서 이어서 해 주세요.",
       idBad: "한글·공백·특수문자는 쓸 수 없습니다. 영문과 숫자로 입력해 주세요 (예: A01).",
       start: "시작하기", startResume: "이어서 하기",
-      resume: (i, n) => `이 ID로 저장된 진행 상황이 있습니다 (${i} / ${n}). 이어서 진행합니다.`,
+      resume: (i, n) => `이 ID로 저장된 진행 상황이 있습니다 (${i} / ${n}). 본인이 진행한 적이 없다면 다른 사람이 쓰는 ID이니 다른 ID를 입력해 주세요.`,
       help: "도움말", helpTitle: "진행 방법", tourAgain: "화면 안내 다시 보기", close: "닫기",
-      camera: "전방 카메라", bev: "위에서 내려다본 지도", replay: "▶ 직전 1.5초 재생", replaying: t => `재생 중 · ${t} s (클릭 불가)`,
-      lgEgo: "내 차 (ego)", lgVeh: "차량", lgPed: "보행자", lgStop: "정지선",
+      camera: "전방 카메라 (자율주행 모델의 카메라 입력)", bev: "위에서 내려다본 지도 (자율주행 모델이 LiDAR로 보는 영역)", camL: "좌측", camF: "정면", camR: "우측", replay: "▶ 직전 1.5초 재생", replaying: t => `재생 중 · ${t} s (클릭 불가)`,
+      lgEgo: "내 차 (ego)", lgVeh: "차량·자전거", lgPed: "보행자", lgStop: "정지선",
       lgNote: "위쪽이 진행 방향입니다. 지도에서 클릭해도 됩니다.",
       decLabel: "이 장면의 올바른 운전 판단",
       ego: (v, c) => `현재 속도 ${v} km/h · 경로 안내: ${c}`,
@@ -45,9 +47,9 @@
       practiceDoneText: n => `이제 본 평가 ${n}개 장면입니다. 연습과 같은 방식으로 진행하세요. 응답은 자동으로 저장됩니다.`,
       tourSkip: "건너뛰기", tourNext: "다음", tourDone: "직접 해 보기",
       tour: [
-        "먼저 이 장면의 <b>올바른 운전 판단</b>을 확인하세요.",
+        "먼저 이 장면의 <b>올바른 운전 판단</b>이 무엇이었는지 확인하세요.",
         "<b>전방 카메라</b>입니다. 차량·보행자는 <b>클릭</b>, 신호등·표지판·정지선 같은 것은 <b>드래그해서 박스</b>를 그리세요. <b>직전 1.5초 재생</b>으로 다른 차가 움직이는지 볼 수 있습니다.",
-        "<b>위에서 내려다본 지도</b>입니다. 초록색이 내 차이고 위쪽이 진행 방향입니다. 지도에서 클릭해도 됩니다.",
+        "<b>위에서 내려다본 지도</b>입니다. 자율주행 모델이 <b>LiDAR</b>로 보는 주변 영역(앞뒤·좌우 32 m)이고, 초록색이 내 차, 위쪽이 진행 방향입니다. 지도에서 표시해도 됩니다.",
         "클릭한 대상이 <b>중요한 순서대로</b> 여기에 쌓입니다(최대 3개). 종류를 고르고, 잘못 찍었으면 ×로 지우세요. 근거가 되는 특정 대상이 없으면 <b>특정 대상 없음</b>을 고릅니다.",
         "얼마나 <b>확신</b>하는지 고르세요.",
         "다 골랐으면 <b>다음</b>. 지금은 연습 장면이니 직접 해 보세요!"
@@ -60,15 +62,16 @@
       failedFinal: "결과를 전송하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요. 계속 실패하면 아래 버튼으로 결과 파일을 내려받아 연구자에게 보내 주세요.",
       retry: "다시 전송", downloadBackup: "결과 파일 내려받기 (백업)",
       syncOk: "✓ 저장됨", syncPending: n => `전송 대기 ${n}`, syncFail: n => `⚠ 전송 실패 ${n} · 다시 시도 중`,
-      cats: { vehicle: "차량", pedestrian: "보행자", traffic_light: "신호등", stop_sign: "정지 표지판", stop_line: "정지선·횡단보도",
+      cats: { vehicle: "차량·자전거", pedestrian: "보행자", traffic_light: "신호등", stop_sign: "정지 표지판", stop_line: "정지선·횡단보도",
               road_shape: "도로 모양", other: "기타" },
       commands: { left: "좌회전", straight: "직진", right: "우회전", unknown: "알 수 없음" },
       stage2: "2단계 비교", s2Head: "세 가지 방법이 표시한 근거 영역 (밝은 부분)",
+      s2Both: "자율주행 모델은 카메라와 LiDAR를 함께 봅니다. 왼쪽 Camera와 오른쪽 LiDAR 두 그림의 밝은 영역을 모두 보고 골라 주세요.",
       s2Title: "2단계: 근거 비교",
-      s2Intro: n => `1단계가 끝났습니다. 이제 앞에서 본 장면 중 ${n}개를 다시 보여 드립니다. 세 가지 방법이 각각 이 판단의 근거로 표시한 영역이 밝게 보입니다. 운전자가 이 판단을 위해 봐야 할 것을 가장 잘 짚은 것을 골라 주세요.`,
+      s2Intro: n => `1단계가 끝났습니다. 이제 앞에서 본 장면 중 ${n}개를 다시 보여 드립니다. 세 가지 방법이 각각 이 판단의 근거로 표시한 영역이 카메라(Camera)와 LiDAR 지도에 밝게 보입니다. 두 그림을 함께 보고, 운전자가 이 판단을 위해 봐야 할 것을 가장 잘 짚은 것을 골라 주세요.`,
       s2Lock: "2단계를 시작하면 1단계 응답은 더 이상 바꿀 수 없습니다.", s2Go: "2단계 시작",
       s2Q: "운전자가 이 판단을 위해 봐야 할 것을 가장 잘 짚은 것은?",
-      s2Hint: "밝게 남은 영역이 각 방법이 근거로 표시한 곳입니다. 줄을 클릭해도 고를 수 있습니다.",
+      s2Hint: "밝게 남은 영역이 각 방법이 근거로 표시한 곳입니다. LiDAR 칸 하나는 8 m × 8 m입니다. 줄을 클릭해도 고를 수 있습니다.",
       same: "비슷함 (구별하기 어려움)", needChoice: "하나를 골라 주세요.",
       keys2: "<kbd>1</kbd>–<kbd>3</kbd> A–C · <kbd>4</kbd> 비슷함 · <kbd>Enter</kbd> 다음",
       metaS2: k => `마지막에 짧은 2단계 비교 ${k}개`,
@@ -92,13 +95,15 @@
       cVehicle: "Vehicle", cPed: "Pedestrian", cEtc: "Other", illClick: "click", illDrag: "drag",
       keynote: "There is no single correct choice. Pick what you would look at if you were driving.",
       meta: (p, n, min) => [p ? `${p} practice + ${n} scenes` : `${n} scenes`, `about ${min} min`, "progress saved automatically", "'Help' shows this again"],
-      idLabel: "Annotator ID", idHint: "Letters and numbers only (e.g. A01). Use the ID the researcher gave you.",
+      idLabel: "Annotator ID", idHint: "Letters and numbers only (e.g. A01).",
+      idResumeNote: "Come back with the same ID to continue where you left off (same computer and browser). If this is your first time and it says it will continue, someone else uses that ID: pick another one.",
+      idTaken: "This ID has already been used on another device. If this is your first time, please choose another ID. If you started on another device, please continue there.",
       idBad: "Spaces, symbols and non-Latin letters are not allowed. Use letters and numbers (e.g. A01).",
       start: "Start", startResume: "Continue",
-      resume: (i, n) => `Saved progress found for this ID (${i} / ${n}). You will continue from there.`,
+      resume: (i, n) => `Saved progress found for this ID (${i} / ${n}). If you never started before, someone else uses this ID: pick another one.`,
       help: "Help", helpTitle: "How it works", tourAgain: "Show the screen tour again", close: "Close",
-      camera: "Front camera", bev: "Top-down map", replay: "▶ Replay last 1.5 s", replaying: t => `replaying · ${t} s (clicks off)`,
-      lgEgo: "our car (ego)", lgVeh: "vehicle", lgPed: "pedestrian", lgStop: "stop line",
+      camera: "Front camera (the driving model's camera input)", bev: "Top-down map (the area the driving model sees with LiDAR)", camL: "left", camF: "front", camR: "right", replay: "▶ Replay last 1.5 s", replaying: t => `replaying · ${t} s (clicks off)`,
+      lgEgo: "our car (ego)", lgVeh: "vehicle / bicycle", lgPed: "pedestrian", lgStop: "stop line",
       lgNote: "Up is the driving direction. You can click on the map too.",
       decLabel: "Correct driving decision",
       ego: (v, c) => `Speed ${v} km/h · Route: ${c}`,
@@ -117,9 +122,9 @@
       practiceDoneText: n => `Now come ${n} study scenes. Work the same way as in practice. Responses are saved automatically.`,
       tourSkip: "Skip", tourNext: "Next", tourDone: "Try it",
       tour: [
-        "First, read the <b>correct driving decision</b> for the scene.",
+        "First, check what the <b>correct driving decision</b> was in this scene.",
         "The <b>front camera</b>. <b>Click</b> vehicles and pedestrians; <b>drag a box</b> around lights, signs, stop lines and the like. <b>Replay last 1.5 s</b> shows whether other road users move.",
-        "The <b>top-down map</b>. Green is our car and up is the driving direction. You can click here too.",
+        "The <b>top-down map</b>: the area around the car (32 m each way) that the driving model sees with <b>LiDAR</b>. Green is our car, up is the driving direction. You can mark here too.",
         "Your clicks stack up here, <b>most important first</b> (up to 3). Choose a type for each; remove a wrong one with ×. If no specific object is the reason, choose <b>No specific object</b>.",
         "Choose how <b>confident</b> you are.",
         "Then press <b>Next</b>. This is a practice scene, so try it now!"
@@ -132,15 +137,16 @@
       failedFinal: "Your results could not be sent. Check your internet connection and try again. If it keeps failing, download the result file below and send it to the researcher.",
       retry: "Send again", downloadBackup: "Download result file (backup)",
       syncOk: "✓ saved", syncPending: n => `${n} waiting to send`, syncFail: n => `⚠ ${n} not sent · retrying`,
-      cats: { vehicle: "Vehicle", pedestrian: "Pedestrian", traffic_light: "Traffic light", stop_sign: "Stop sign",
+      cats: { vehicle: "Vehicle / bicycle", pedestrian: "Pedestrian", traffic_light: "Traffic light", stop_sign: "Stop sign",
               stop_line: "Stop line / crosswalk", road_shape: "Road shape", other: "Other" },
       commands: { left: "turn left", straight: "go straight", right: "turn right", unknown: "unknown" },
       stage2: "Stage 2", s2Head: "Reason areas marked by three methods (bright parts)",
+      s2Both: "The driving model uses the camera and LiDAR together. Look at the bright areas in both the Camera image and the LiDAR map before choosing.",
       s2Title: "Stage 2: compare",
-      s2Intro: n => `Stage 1 is done. You will now see ${n} of the scenes again. In each, three methods have marked the areas they take as the reasons for the decision (shown bright). Pick the one that best marks what a driver must see for this decision.`,
+      s2Intro: n => `Stage 1 is done. You will now see ${n} of the scenes again. In each, three methods have marked the areas they take as the reasons for the decision, shown bright in the Camera image and the LiDAR map. Look at both and pick the one that best marks what a driver must see for this decision.`,
       s2Lock: "Once stage 2 starts, your stage 1 responses can no longer be changed.", s2Go: "Start stage 2",
       s2Q: "Which one best marks what a driver must see for this decision?",
-      s2Hint: "Bright areas are what each method marked as the reasons. You can also click a row.",
+      s2Hint: "Bright areas are what each method marked as the reasons. One LiDAR cell is 8 m × 8 m. You can also click a row.",
       same: "About the same (hard to tell)", needChoice: "Pick one.",
       keys2: "<kbd>1</kbd>–<kbd>3</kbd> A–C · <kbd>4</kbd> same · <kbd>Enter</kbd> next",
       metaS2: k => `a short stage 2 of ${k} comparisons at the end`,
@@ -280,6 +286,7 @@
     const up = raw.toUpperCase();
     if (raw !== up) { const p = idInput.selectionStart; idInput.value = up; idInput.setSelectionRange(p, p); }
     const id = idInput.value.trim();
+    $("idTaken").classList.add("hidden");
     const ok = ID_RE.test(id), bad = id.length > 0 && !ok;
     $("startBtn").disabled = !ok;
     idInput.classList.toggle("bad", bad);
@@ -299,9 +306,26 @@
   const checkScreen = () => $("smallScreen").classList.toggle("hidden", window.innerWidth >= 1000);
   checkScreen(); window.addEventListener("resize", checkScreen);
 
-  $("startBtn").addEventListener("click", () => {
+  // A new ID (nothing saved in this browser) is checked against the collector: if another device already sent data
+  // under it, it is someone else's (or the same person on another device) and starting here would mix two people.
+  async function idUsedElsewhere(id) {
+    if (!ONLINE) return false;
+    try {
+      const u = `${CFG.submit_url}?view=idcheck&id=${encodeURIComponent(id)}&manifest=${encodeURIComponent(M.manifest_id)}`;
+      const j = await (await fetch(u)).json();
+      return !!(j.ok && j.used);
+    } catch (e) { return false; }                // the check must never block a study when the server is unreachable
+  }
+  $("startBtn").addEventListener("click", async () => {
     const id = idInput.value.trim();
     if (!ID_RE.test(id)) return;
+    $("idTaken").classList.add("hidden");
+    if (!load(id)) {
+      $("startBtn").disabled = true;
+      const taken = await idUsedElsewhere(id);
+      $("startBtn").disabled = false;
+      if (taken) { $("idTaken").textContent = T().idTaken; $("idTaken").classList.remove("hidden"); return; }
+    }
     S = load(id);
     if (!S || S.app_version !== APP_VERSION) {
       const seed = fnv1a(`${M.order_salt}|${id}`);
@@ -407,12 +431,16 @@
     $("ego").textContent = T().ego(sc.ego_speed_kmh.toFixed(0), T().commands[sc.driving_command] || sc.driving_command);
     const box = $("cmpOpts");
     if (box.dataset.uid !== uid) {
-      box.dataset.uid = uid; box.innerHTML = "";
+      box.dataset.uid = uid;
+      box.innerHTML = `<div class="cmphead" aria-hidden="true"><span></span><span>Camera</span><span>LiDAR</span></div>`;
+      const labels = `<div class="camlabels" aria-hidden="true"><span style="left:13.28%">${T().camL}</span>` +
+        `<span style="left:50%">${T().camF}</span><span style="left:86.72%">${T().camR}</span></div>`;
       r.display.forEach((oid, i) => {
         const o = c.options.find(q => q.option_id === oid);
         const row = document.createElement("div");
         row.className = "cmprow"; row.dataset.oid = oid; row.setAttribute("role", "radio");
-        row.innerHTML = `<span class="letter">${LETTERS[i]}</span><img alt="" src="${o.camera}"><img alt="" src="${o.bev}">`;
+        row.innerHTML = `<span class="letter">${LETTERS[i]}</span><div class="cam2"><img alt="" src="${o.camera}">${labels}</div>` +
+          `<div class="lidar"><img alt="" src="${o.bev}"></div>`;
         row.addEventListener("click", () => choose(oid));
         box.appendChild(row);
       });

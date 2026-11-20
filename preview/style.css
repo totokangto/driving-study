@@ -207,3 +207,25 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .svq h3 { color: var(--ink); font-size: 15px; margin: 0 0 8px; }
 .svq .seg { grid-template-columns: repeat(var(--n), 1fr); }
 .svq.need { border-color: #fca5a5; }
+
+/* ------------------------------------------------------------ 2026-11-20 feedback */
+.camlabels { position: absolute; inset: 0 0 auto 0; pointer-events: none; }
+.camlabels span { position: absolute; top: 6px; transform: translateX(-50%); background: rgba(17,24,39,.62); color: #fff;
+  font-size: 12px; line-height: 1; padding: 4px 8px; border-radius: 999px; letter-spacing: .02em; }
+.taken { margin: 10px 0 0; background: #fff1f2; color: #9f1239; border-radius: 8px; padding: 8px 12px; font-size: 14px; }
+.keys.p1 { margin: 2px 0 10px; }
+.cmphead { display: grid; grid-template-columns: 34px minmax(0, 3fr) minmax(0, 1fr); gap: 8px; padding: 0 8px; font-size: 12px;
+  font-weight: 700; color: #374151; letter-spacing: .03em; }
+.cmphead span:nth-child(3) { color: #0e7490; }
+.cmprow { grid-template-columns: 34px minmax(0, 3fr) minmax(0, 1fr); }
+.cmprow .cam2 { position: relative; line-height: 0; }
+.cmprow .cam2 .camlabels span { font-size: 10px; padding: 3px 6px; top: 4px; }
+.cmprow .lidar { line-height: 0; border-radius: 5px; overflow: hidden; outline: 2px solid #0e7490; outline-offset: -2px; }
+.s2note { font-size: 13px; color: #0e7490; background: #ecfeff; border-radius: 8px; padding: 6px 10px; margin: 0 0 8px; }
+/* stage 2: all three options must be visible without scrolling (an option below the fold would bias the choice).
+   --u = LiDAR side = row height; the camera gets 3u wide (0.75u high), so LiDAR is a third of the camera's width. */
+#cmpSec { --u: min(calc((100vw - 480px) / 4), calc((100vh - 252px) / 3)); }
+.cmphead, .cmprow { grid-template-columns: 34px calc(3 * var(--u)) var(--u); justify-content: start; }
+.cmpopts { gap: 6px; }
+.cmprow { padding: 4px 6px; }
+@media (max-width: 1000px) { #cmpSec { --u: calc((100vw - 110px) / 4); } }
