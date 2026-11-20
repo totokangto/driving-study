@@ -141,6 +141,7 @@ td.hit { text-align: center; }
       <h2>방법별 중간 결과</h2>
       <p class="sub">이 데이터셋의 <code>key.json</code>을 이 PC에서 열면 나옵니다. 파일은 브라우저 안에서만 읽고 어디에도 올리지 않으며, 새로고침하면 다시 열어야 합니다.</p>
       <label class="filebtn"><input type="file" id="keyFile" accept=".json,application/json"></label>
+      <label class="chk" style="margin-left:12px"><input type="checkbox" id="useExcl" checked> 확인 장면 제외 규칙 적용 (끄면 시험용: 모든 완료자 포함)</label>
       <p id="resMsg" class="small"></p>
       <div id="resBody" class="hidden">
         <div class="res-banner" id="resBanner"></div>
@@ -476,7 +477,7 @@ td.hit { text-align: center; }
     CUR.scenes.forEach(r => { const a = String(r.annotator_id), x = r.response || {}; if (done.has(a)) (resp[a] = resp[a] || {})[x.scene_uid] = x; });
     // check scenes: more than one miss of the expected object -> excluded (SPEC 4.3)
     const checks = Object.entries(SC).filter(([, v]) => v.kind === "spread" && v.monitor && v.monitor.check);
-    const excluded = new Set();
+    const excluded = new Set(), why = {};
     done.forEach(a => {
       let fails = 0;
       checks.forEach(([u, v]) => {
@@ -490,13 +491,17 @@ td.hit { text-align: center; }
         }
         if (!ok) fails++;
       });
-      if (fails > 1) excluded.add(a);
+      if (fails > 1) { excluded.add(a); why[a] = `${a}: 확인 장면 ${checks.length}개 중 ${fails}개 놓침`; }
     });
-    const inc = [...done].filter(a => !excluded.has(a));
+    const useExcl = $("useExcl").checked;
+    const inc = [...done].filter(a => !useExcl || !excluded.has(a));
     // responses whose scene is not in this key come from another build of the site (scene ids differ)
     const foreign = CUR.scenes.filter(r => done.has(String(r.annotator_id)) && !SC[(r.response || {}).scene_uid]).length;
-    $("resBanner").innerHTML = `<b>중간 결과</b> · 끝까지 마친 ${done.size}명 중 확인 장면을 통과한 <b>${inc.length}명</b> 기준` +
-      (excluded.size ? ` (제외 ${excluded.size}명: ${[...excluded].map(esc).join(", ")})` : "") +
+    $("resBanner").innerHTML = (useExcl
+      ? `<b>중간 결과</b> · 끝까지 마친 ${done.size}명 중 확인 장면을 통과한 <b>${inc.length}명</b> 기준` +
+        (excluded.size ? ` (제외 ${excluded.size}명 — ${[...excluded].map(a => esc(why[a])).join(", ")}. 확인 장면에서 "특정 대상 없음"이나 다른 대상을 1순위로 고르면 놓친 것으로 셉니다)` : "")
+      : `<b>시험용: 제외 규칙 꺼짐</b> · 끝까지 마친 <b>${done.size}명</b> 모두 포함` +
+        (excluded.size ? ` (규칙을 켜면 제외될 사람 — ${[...excluded].map(a => esc(why[a])).join(", ")})` : "")) +
       ` · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 report.py 결과를 씁니다.` +
       (foreign ? `<br><b>⚠ 완료자 응답 중 ${foreign}개는 이 key에 없는 장면입니다.</b> 사이트를 다시 빌드하기 전에 모은 데이터라 이 key로는 계산할 수 없습니다(그 사람은 확인 장면이 비어 제외될 수 있음).` : "");
     $("resLegend").innerHTML = M.map(m => `<span><i style="background:${COL(m)}"></i>${esc(L(m))}</span>`).join("");
@@ -599,6 +604,7 @@ td.hit { text-align: center; }
   $("saveKey").addEventListener("click", () => { store.set("monitor_admin", $("adminKey").value.trim()); fetchRows(); });
   $("adminKey").addEventListener("keydown", e => { if (e.key === "Enter") $("saveKey").click(); });
   $("refresh").addEventListener("click", fetchRows);
+  $("useExcl").addEventListener("change", renderResults);
   $("dataset").addEventListener("change", render);
   $("hideTest").addEventListener("change", render);
   function setAuto() { clearInterval(timer); if ($("auto").checked) timer = setInterval(fetchRows, 60000); }
