@@ -58,7 +58,7 @@
         "다 골랐으면 <b>다음</b>. 지금은 연습 장면이니 직접 해 보세요!"
       ],
       doneTitle: "끝났습니다. 감사합니다!", doneText: "아래 버튼으로 결과 파일을 내려받아 연구자에게 보내 주세요.",
-      download: "결과 파일 내려받기", back: "← 첫 장면으로",
+      download: "결과 파일 내려받기", back: "← 이전으로", home: "← 처음 화면으로",
       doneTextOnline: "응답은 장면마다 자동으로 연구자에게 전송됩니다.",
       sendingFinal: "결과를 전송하는 중입니다…",
       sentFinal: "✓ 결과가 전송되었습니다. 이제 창을 닫으셔도 됩니다.",
@@ -137,7 +137,7 @@
         "Then press <b>Next</b>. This is a practice scene, so try it now!"
       ],
       doneTitle: "All done. Thank you!", doneText: "Please download the result file below and send it to the researcher.",
-      download: "Download result file", back: "← Back to the first scene",
+      download: "Download result file", back: "← Back", home: "← Back to the start",
       doneTextOnline: "Your responses are sent to the researcher automatically after every scene.",
       sendingFinal: "Sending your results…",
       sentFinal: "✓ Your results have been sent. You can close this window now.",
@@ -1038,11 +1038,12 @@
     $("retryBtn").classList.toggle("hidden", finalState !== "failed");
   }
   $("retryBtn").addEventListener("click", () => { fails = 0; setFinal("sending"); clearTimeout(retryTimer); flush(); });
-  $("backBtn").addEventListener("click", () => {           // to the first item still open (stage 1 is locked in stage 2)
-    if (S.phase === 2) S.cmp_idx = 0; else S.idx = 0;
-    S.at_survey = false;
-    save();
-    $("done").classList.add("hidden"); $("task").classList.remove("hidden"); renderScene();
+  // to the start screen (2026-11-21). The finished state is kept, so the same ID opens this page again and answers
+  // cannot change after the final was sent; a new ID starts afresh. Before, this reopened the first item still open,
+  // which in stage 2 was the first comparison (stage 1 is locked there), and editing it re-sent finished answers.
+  $("backBtn").addEventListener("click", () => {
+    $("done").classList.add("hidden"); $("start").classList.remove("hidden");
+    idInput.value = ""; onIdInput(); window.scrollTo(0, 0);
   });
   function resultObject() {
     return {
