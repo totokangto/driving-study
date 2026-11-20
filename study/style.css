@@ -96,9 +96,15 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .imgwrap.replaying canvas { cursor: progress; }
 .imgwrap.replaying { box-shadow: inset 0 0 0 3px var(--warn); }
 .imgwrap.full canvas { cursor: not-allowed; }
-/* map: as large as the space under the camera allows (camera height = column width / 4) */
+/* stage 1 sizes, from the width the task column really has (the page stops growing at 1680 px, 2026-11-20 fix: it used
+   100vw, so on wide screens the camera height was overestimated and the map shrank to its minimum) and the window height.
+   The camera fills the column, but on a short window it gives up to a quarter of its width so that a map of at least
+   320 px fits under it; the map then takes the height left (camera height = camera width / 4). */
+#task { --colw: calc(min(100vw, 1680px) - var(--side) - 70px); --avail: calc(100vh - var(--bar) - 150px);
+  --camw: min(var(--colw), max(calc(var(--colw) * .75), calc((var(--avail) - 320px) * 4))); }
+#camWrap { max-width: var(--camw); }
 .bevrow { display: flex; gap: 14px; align-items: flex-start; }
-#bevWrap { flex: none; width: clamp(240px, calc(100vh - var(--bar) - 150px - (100vw - var(--side) - 70px) / 4), 512px); }
+#bevWrap { flex: none; width: clamp(320px, calc(var(--avail) - var(--camw) / 4), 512px); }
 .legend { list-style: none; margin: 0; padding: 4px 0 0; font-size: 13px; color: #4b5563; display: grid; gap: 6px; }
 .legend li { display: flex; align-items: center; gap: 8px; }
 .legend .lgnote { color: var(--muted); font-size: 12px; max-width: 220px; display: block; margin-top: 6px; line-height: 1.45; }
@@ -172,6 +178,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
   .taskgrid { grid-template-columns: 1fr; }
   .side { position: static; max-height: none; }
   #bevWrap { width: min(512px, 100%); }
+  #camWrap { max-width: none; }
   .bevrow { flex-direction: column; }
   .steps { grid-template-columns: 1fr; }
 }
@@ -224,11 +231,20 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93b4ff; outline-
 .s2note { font-size: 13px; color: #0e7490; background: #ecfeff; border-radius: 8px; padding: 6px 10px; margin: 0 0 8px; }
 /* stage 2: all three options must be visible without scrolling (an option below the fold would bias the choice).
    --u = LiDAR side = row height; the camera gets 3u wide (0.75u high), so LiDAR is a third of the camera's width. */
-#cmpSec { --u: min(calc((100vw - 480px) / 4), calc((100vh - 252px) / 3)); }
+/* the row needs 4u + 70 px (letter column, gaps, padding, border). Measured on the section itself where the browser has
+   container units; otherwise from the window width capped at the page's 1680 px (2026-11-20 fix: it used 100vw, so on
+   screens wider than the page the rows ran under the side panel) */
+.cmpopts { --u: min(calc((min(100vw, 1680px) - 480px) / 4), calc((100vh - 252px) / 3)); }
+@supports (width: 1cqw) {
+  #cmpSec { container-type: inline-size; }
+  .cmpopts { --u: min(calc((100cqw - 70px) / 4), calc((100vh - 252px) / 3)); }
+}
 .cmphead, .cmprow { grid-template-columns: 34px calc(3 * var(--u)) var(--u); justify-content: start; }
 .cmpopts { gap: 6px; }
 .cmprow { padding: 4px 6px; }
-@media (max-width: 1000px) { #cmpSec { --u: calc((100vw - 110px) / 4); } }
+/* phones and narrow windows: no height limit (the page scrolls), the full section width */
+@media (max-width: 1000px) { .cmpopts { --u: calc((100vw - 130px) / 4); } }
+@supports (width: 1cqw) { @media (max-width: 1000px) { .cmpopts { --u: calc((100cqw - 70px) / 4); } } }
 
 /* ------------------------------------------------------------ phones (2026-11-20) */
 .notice.phone { font-size: 16px; font-weight: 600; border: 2px solid #f59e0b; padding: 12px 14px; line-height: 1.5; }
