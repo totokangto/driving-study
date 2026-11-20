@@ -177,7 +177,12 @@
   const storeKey = id => `annot_state_v1_${id}`;
 
   function save() { try { localStorage.setItem(storeKey(S.annotator_id), JSON.stringify(S)); } catch (e) { /* ignore */ } }
-  function load(id) { try { return JSON.parse(localStorage.getItem(storeKey(id)) || "null"); } catch (e) { return null; } }
+  // saved progress of this ID, only if it belongs to this build (a rebuilt site has other scenes: start afresh)
+  function load(id) {
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem(storeKey(id)) || "null"); } catch (e) { return null; }
+    return s && s.app_version === APP_VERSION && s.manifest_id === M.manifest_id ? s : null;
+  }
 
   // ------------------------------------------------------------ online collection (config.js; off when submit_url is empty)
   // Every message goes to an outbox in localStorage first and leaves it only when the server replies {ok: true}, so a
@@ -327,10 +332,10 @@
       if (taken) { $("idTaken").textContent = T().idTaken; $("idTaken").classList.remove("hidden"); return; }
     }
     S = load(id);
-    if (!S || S.app_version !== APP_VERSION) {
+    if (!S) {
       const seed = fnv1a(`${M.order_salt}|${id}`);
-      S = { app_version: APP_VERSION, annotator_id: id, order_seed: seed, order: makeOrder(seed), idx: 0,
-            started_at: new Date().toISOString(), finished_at: null, resp: {}, lang };
+      S = { app_version: APP_VERSION, manifest_id: M.manifest_id, annotator_id: id, order_seed: seed, order: makeOrder(seed),
+            idx: 0, started_at: new Date().toISOString(), finished_at: null, resp: {}, lang };
     }
     S.lang = lang;
     S.phase = S.phase || 1;

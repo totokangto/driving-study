@@ -493,9 +493,12 @@ td.hit { text-align: center; }
       if (fails > 1) excluded.add(a);
     });
     const inc = [...done].filter(a => !excluded.has(a));
+    // responses whose scene is not in this key come from another build of the site (scene ids differ)
+    const foreign = CUR.scenes.filter(r => done.has(String(r.annotator_id)) && !SC[(r.response || {}).scene_uid]).length;
     $("resBanner").innerHTML = `<b>중간 결과</b> · 끝까지 마친 ${done.size}명 중 확인 장면을 통과한 <b>${inc.length}명</b> 기준` +
       (excluded.size ? ` (제외 ${excluded.size}명: ${[...excluded].map(esc).join(", ")})` : "") +
-      ` · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 report.py 결과를 씁니다.`;
+      ` · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 report.py 결과를 씁니다.` +
+      (foreign ? `<br><b>⚠ 완료자 응답 중 ${foreign}개는 이 key에 없는 장면입니다.</b> 사이트를 다시 빌드하기 전에 모은 데이터라 이 key로는 계산할 수 없습니다(그 사람은 확인 장면이 비어 제외될 수 있음).` : "");
     $("resLegend").innerHTML = M.map(m => `<span><i style="background:${COL(m)}"></i>${esc(L(m))}</span>`).join("");
 
     // stage 1: majority per main scene, hits per method
