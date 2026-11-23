@@ -18,6 +18,8 @@
 
   // ------------------------------------------------------------ text (Korean / English; the paper shows the English UI)
   const josa = w => ((w.charCodeAt(w.length - 1) - 0xac00) % 28 ? "을" : "를");   // final consonant -> 을, else 를
+  const O_KO = `<span class="c-orig">주황색</span>`, B_KO = `<span class="c-steer">파란색</span>`;   // path colours in the yes/no question
+  const O_EN = `<span class="c-orig">orange</span>`, B_EN = `<span class="c-steer">blue</span>`;
   const TEXT = {
     ko: {
       title: "자율주행 모델의 뉴런 묶음 평가",
@@ -26,7 +28,7 @@
       s1t: "설명 읽기", s1d: "화면 위 파란 칸에 이 뉴런 묶음이 담당한다는 행동이 나옵니다.",
       illOrig: "원래 경로", illSteer: "켠 뒤 경로",
       s2t: "세 결과 보기", s2d: "세 팀의 뉴런 묶음을 각각 켰을 때의 경로가 지도 세 개에 나옵니다. 두 차가 경로를 따라 움직입니다.",
-      ex3q: "정말 느려졌나요?", ex3r1: "결과 1", ex3r2: "결과 2", ex3r3: "결과 3",
+      ex3q: "주황보다 파랑이 더 느려졌나요?", ex3r1: "결과 1", ex3r2: "결과 2", ex3r3: "결과 3",
       s3t: "판단하기 → 다음", s3d: "결과마다 설명대로 움직였는지 예/아니오로 고르고, 셋 중 설명에 가장 맞는 결과를 고른 뒤 '다음'을 누르세요.",
       lgOrig: "주황 선: 원래 계획 경로", lgSteer: "파란 선: 뉴런 묶음을 강하게 켠 뒤의 계획 경로",
       lgDots: "선 위의 점: 0.5초마다 차가 있을 위치 (점 간격이 넓을수록 빠름)",
@@ -48,8 +50,10 @@
       claimTask: v => `이 뉴런 묶음을 강하게 켰을 때 차가 정말 <span class="verbword">${v}</span> 파란 경로를 보고 확인해 주세요.`,
       safety: "⚠ 도로를 벗어나거나 다른 차와 부딪히는 등 <b>경로의 안전성은 무시</b>하고, 설명한 행동대로 바뀌었는지만 봐 주세요.",
       verb: { "좌회전": "왼쪽으로 꺾는지", "우회전": "오른쪽으로 꺾는지", "정지": "멈추는지", "가속": "빨라지는지", "감속": "느려지는지" },
-      q1: { "좌회전": "정말 왼쪽으로 꺾었나요?", "우회전": "정말 오른쪽으로 꺾었나요?", "정지": "정말 멈췄나요?",
-            "가속": "정말 빨라졌나요?", "감속": "정말 느려졌나요?" },
+      // per result: blue (activated) against orange (original), 2026-11-23 feedback
+      q1: { "좌회전": `${O_KO}보다 ${B_KO}이 정말 더 왼쪽으로 꺾였나요?`, "우회전": `${O_KO}보다 ${B_KO}이 정말 더 오른쪽으로 꺾였나요?`,
+            "정지": `${O_KO}과 달리 ${B_KO}은 정말 멈췄나요?`,
+            "가속": `${O_KO}보다 ${B_KO}이 정말 더 빨라졌나요?`, "감속": `${O_KO}보다 ${B_KO}이 정말 더 느려졌나요?` },
       camCap: "전방 카메라 (왼쪽 | 앞 | 오른쪽)", egoSpeed: "현재 속도", egoCmd: "내비 지시", replay: "⟲ 다시 재생",
       result: k => `결과 ${k}`,
       unit: "km/h", spd: v => String(Math.round(v)),
@@ -102,7 +106,7 @@
       s1t: "Read the claim", s1d: "The blue box at the top says which behaviour this neuron set is claimed to be responsible for.",
       illOrig: "original path", illSteer: "activated",
       s2t: "Watch the three results", s2d: "Three maps show the path when each team's neuron set is activated. Two cars move along the paths.",
-      ex3q: "Did it really slow down?", ex3r1: "Result 1", ex3r2: "Result 2", ex3r3: "Result 3",
+      ex3q: "Is blue slower than orange?", ex3r1: "Result 1", ex3r2: "Result 2", ex3r3: "Result 3",
       s3t: "Judge → Next", s3d: "For each result, say whether the car moved as claimed (yes/no), pick the result that best matches the claim, then press 'Next'.",
       lgOrig: "Orange line: the original planned path", lgSteer: "Blue line: the planned path after strongly activating the neuron set",
       lgDots: "Dots on a line: where the car will be every 0.5 s (wider spacing = faster)",
@@ -124,8 +128,10 @@
       claimTask: v => `Check with the blue path whether the car really <span class="verbword">${v}</span> when this neuron set is strongly activated.`,
       safety: "⚠ <b>Ignore whether the path is safe</b> (leaving the road or hitting other cars does not matter here); only check whether it changes as claimed.",
       verb: { "좌회전": "turns left", "우회전": "turns right", "정지": "stops", "가속": "speeds up", "감속": "slows down" },
-      q1: { "좌회전": "Did it really turn left?", "우회전": "Did it really turn right?", "정지": "Did it really stop?",
-            "가속": "Did it really speed up?", "감속": "Did it really slow down?" },
+      q1: { "좌회전": `Compared with ${O_EN}, did ${B_EN} really turn more to the left?`,
+            "우회전": `Compared with ${O_EN}, did ${B_EN} really turn more to the right?`,
+            "정지": `Unlike ${O_EN}, did ${B_EN} really stop?`,
+            "가속": `Is ${B_EN} really faster than ${O_EN}?`, "감속": `Is ${B_EN} really slower than ${O_EN}?` },
       claimName: { "좌회전": "turning left", "우회전": "turning right", "정지": "stopping", "가속": "speeding up", "감속": "slowing down" },
       camCap: "Front camera (left | front | right)", egoSpeed: "Current speed", egoCmd: "Route command", replay: "⟲ Replay",
       result: k => `Result ${k}`,

@@ -124,7 +124,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .paneltitle .num { width: 24px; height: 24px; border-radius: 50%; background: var(--soft); color: #374151; display: grid; place-items: center; font-size: 13px; }
 .panel.chosen .paneltitle .num { background: var(--accent); color: #fff; }
 /* the three maps, both questions and Next fit in one window where possible (a result below the fold could bias the choice) */
-.panel canvas { width: min(100%, max(240px, calc(100vh - 572px))); aspect-ratio: 1 / 1; display: block; margin: 0 auto;
+.panel canvas { width: min(100%, max(240px, calc(100vh - 586px))); aspect-ratio: 1 / 1; display: block; margin: 0 auto;
   border-radius: 8px; background: #eef0f2; }
 .speed { margin: 6px 0 4px; font-size: 14px; color: #374151; }
 .speed b { font-size: 17px; color: var(--ink); }
@@ -206,3 +206,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
   .trialbody { padding-bottom: 24px; }
 }
 @media (hover: none) { .keys { display: none !important; } }
+/* path colours named in the yes/no question (2026-11-23) */
+.c-orig { color: #c2410c; font-weight: 700; }
+.c-steer { color: #1d4ed8; font-weight: 700; }
+.q1 .q1text { line-height: 1.35; }
+.q1 button { white-space: nowrap; min-width: 52px; padding: 6px 10px; flex: none; }
