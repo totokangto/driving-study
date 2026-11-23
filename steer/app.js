@@ -62,7 +62,8 @@
       needQ1: ks => `${ks.map(k => `결과 ${k}`).join(", ")}의 질문(예/아니오)에 답해 주세요.`,
       needQ3: "셋 중 설명에 가장 맞는 결과를 골라 주세요.",
       tieAll: "비교할 수 없음 (모두 맞음)", tieNone: "비교할 수 없음 (모두 틀림)",
-      tieNote: "'비교할 수 없음'은 위 세 질문이 모두 '예'이거나 모두 '아니오'일 때만 고를 수 있습니다. 둘이 비슷하면 그중 더 잘 맞는 하나를 골라 주세요.",
+      tieNote: "하나가 가장 잘 맞으면 그 결과를, 둘이 똑같이 잘 맞아 우열을 가릴 수 없으면 '두 개 고르기'를 켜고 두 개를, 셋 다 비슷하면 '비교할 수 없음'을 골라 주세요.",
+      pair: "두 개 고르기", needPair: "'두 개 고르기'를 켰습니다. 똑같이 잘 맞는 결과 두 개를 골라 주세요.",
       keys: "<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 가장 맞는 결과 · <kbd>R</kbd> 다시 재생 · <kbd>Enter</kbd> 다음",
       fbOk: "맞았습니다.", fbWrong: k => `이번에는 결과 ${k}${k === 2 ? "가" : "이"} 정답입니다.`,   // 1 일, 3 삼 -> 이; 2 이 -> 가
       fbAfter: "본 문항부터는 정답을 알려 드리지 않습니다. 정답이 정해지지 않은 문항도 있으니 보이는 대로 판단해 주세요.",
@@ -74,7 +75,7 @@
         "<b>전방 카메라</b>와 현재 속도, 내비 지시로 상황을 파악하세요. <b>⟲ 다시 재생</b>으로 움직임을 처음부터 다시 볼 수 있습니다.",
         "세 팀의 뉴런 묶음을 각각 켠 <b>결과 세 개</b>입니다. <b>주황 선</b>(원래 경로)과 <b>파란 선</b>(켠 뒤 경로)을 비교하세요. 두 차가 경로를 따라 2배속으로 움직입니다.",
         "결과마다 차가 <b>설명대로 움직였는지</b> 예/아니오로 고르세요.",
-        "마지막으로 셋 중 설명에 <b>가장 맞는 결과</b>를 고르세요 (숫자키 1–3). 세 결과가 모두 맞거나 모두 틀렸으면 <b>비교할 수 없음</b>을 고를 수 있습니다.",
+        "마지막으로 셋 중 설명에 <b>가장 맞는 결과</b>를 고르세요 (숫자키 1–3). 둘이 똑같이 잘 맞으면 <b>두 개 고르기</b>, 셋 다 비슷하면 <b>비교할 수 없음</b>을 고를 수 있습니다. 경로의 <b>안전성은 무시</b>하세요.",
         "다 골랐으면 <b>다음</b>. 지금은 연습 문항이라 고른 뒤 정답을 알려 드립니다. 직접 해 보세요!"
       ],
       svTitle: "마지막으로 몇 가지만 알려 주세요", svLead: "결과를 해석할 때만 씁니다. 각 질문에 하나씩 골라 주세요.",
@@ -140,7 +141,8 @@
       needQ1: ks => `Please reply yes/no for ${ks.map(k => `Result ${k}`).join(", ")}.`,
       needQ3: "Please pick the result that best matches the claim.",
       tieAll: "Can't compare (all match)", tieNone: "Can't compare (none match)",
-      tieNote: "'Can't compare' is available only when all three replies above are 'Yes' (or all 'No'). If two look alike, pick the one that matches better.",
+      tieNote: "Pick the result that matches best. If two match equally well, turn on 'Pick two' and choose both; if all three are alike, choose 'Can't compare'.",
+      pair: "Pick two", needPair: "'Pick two' is on: choose the two results that match equally well.",
       keys: "<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> best match · <kbd>R</kbd> replay · <kbd>Enter</kbd> next",
       fbOk: "Correct.", fbWrong: k => `This time Result ${k} is the correct one.`,
       fbAfter: "From now on no feedback is given. Some items have no single correct result, so judge as you see it.",
@@ -153,7 +155,7 @@
         "Get the situation from the <b>front camera</b>, the current speed and the route command. <b>⟲ Replay</b> restarts the motion.",
         "These are the <b>three results</b>, one per team's neuron set. Compare the <b>orange line</b> (original path) with the <b>blue line</b> (after activation). Two cars move along the paths at 2× speed.",
         "For each result, say whether the car <b>moved as claimed</b> (yes/no).",
-        "Finally pick the result that <b>best matches</b> the claim (keys 1–3). If all three match, or none does, you may choose <b>Can't compare</b>.",
+        "Finally pick the result that <b>best matches</b> the claim (keys 1–3). If two match equally well use <b>Pick two</b>; if all three are alike, <b>Can't compare</b>. <b>Ignore safety</b>.",
         "When done, press <b>Next</b>. This is a practice item, so you will see the correct result. Try it!"
       ],
       svTitle: "A few last questions", svLead: "Used only to interpret the results. Please pick one option for each question.",
@@ -367,7 +369,7 @@
     $("progressFill").style.width = `${100 * S.idx / S.order.length}%`;
     $("claimLine").innerHTML = T().claimLine(w);
     $("claimTask").innerHTML = T().claimTask(T().verb[it.claim]);
-    $("claimSafety").innerHTML = T().safety;
+    $("safetyNote").innerHTML = T().safety;
     $("q3Label").innerHTML = T().q3(w);
     $("cam").src = "images/" + it.camera;
     $("egoSpeed").textContent = T().spd(it.ego_speed_kmh);
@@ -400,13 +402,21 @@
       b.addEventListener("click", () => chooseQ3(pid));
       q3.appendChild(b);
     });
-    // ties (2026-11-23): only when the item's own Q1 replies agree (all yes / all no), so they are not an easy way out;
-    // two results that look alike still need one pick. Analysis: each method gets 1/3 (steer_analyze.py)
+    // two results equally good (2026-11-23): an explicit switch, so a second click never doubles a pick by accident
+    const pl = document.createElement("label");
+    pl.className = "pairtoggle";
+    pl.innerHTML = `<input type="checkbox"><span></span>`;
+    pl.querySelector("span").textContent = T().pair;
+    pl.querySelector("input").checked = !!r.pair_mode;
+    pl.querySelector("input").addEventListener("change", e => setPair(e.target.checked));
+    q3.appendChild(pl);
+    // three alike: "can't compare" (all match / none match). Scoring (steer_analyze.py): 1 pick -> 1, two -> 1/2 each,
+    // can't compare -> 1/3 each
     [[TIE_ALL, T().tieAll], [TIE_NONE, T().tieNone]].forEach(([v, label]) => {
       const b = document.createElement("button");
-      b.textContent = label; b.dataset.pid = v; b.className = "tie"; b.title = T().tieNote;
+      b.textContent = label; b.dataset.pid = v; b.className = "tie";
       b.setAttribute("role", "radio");
-      b.addEventListener("click", () => { if (!b.disabled) chooseQ3(v); });
+      b.addEventListener("click", () => chooseQ3(v));
       q3.appendChild(b);
     });
     renderFeedback();
@@ -416,42 +426,56 @@
     if (!keepClock || !raf) restart();
     mark();
   }
-  function chooseQ3(pid) { const r = resp(cur()); r.q3 = pid; save(); mark(); }
+  // r.q3: a panel id, TIE_ALL / TIE_NONE, or [panel id, panel id] when "pick two" is on
+  const isTie = v => v === TIE_ALL || v === TIE_NONE;
+  const picked = (r, pid) => (Array.isArray(r.q3) ? r.q3.includes(pid) : r.q3 === pid);
+  function chooseQ3(pid) {
+    const r = resp(cur());
+    if (isTie(pid)) { r.q3 = pid; r.pair_mode = false; }
+    else if (r.pair_mode) {
+      const had = Array.isArray(r.q3) && r.q3.includes(pid);
+      const a = Array.isArray(r.q3) ? r.q3.filter(x => x !== pid) : [];
+      if (!had) { a.push(pid); if (a.length > 2) a.shift(); }
+      r.q3 = a.length ? a : null;
+    } else r.q3 = pid;
+    save(); renderPairBox(); mark();
+  }
+  function setPair(on) {
+    const r = resp(cur());
+    r.pair_mode = on;
+    if (on) r.q3 = typeof r.q3 === "string" && !isTie(r.q3) ? [r.q3] : null;
+    else r.q3 = Array.isArray(r.q3) ? (r.q3[0] || null) : r.q3;
+    save(); mark();
+  }
+  function renderPairBox() { const i = document.querySelector(".pairtoggle input"); if (i) i.checked = !!resp(cur()).pair_mode; }
   function missing() {
     const it = cur(), r = resp(it), order = S.panelOrder[it.uid];
     const q1 = order.map((pid, k) => (r.q1[pid] ? null : k + 1)).filter(k => k !== null);
-    return { q1, q3: !r.q3 };
-  }
-  function tieAllowed(r, it) {                             // which tie button the Q1 replies allow
-    const v = it.panels.map(p => r.q1[p.pid]);
-    return { [TIE_ALL]: v.every(x => x === "yes"), [TIE_NONE]: v.every(x => x === "no") };
+    return { q1, q3: !r.q3 || (Array.isArray(r.q3) && r.q3.length < 2), pair: Array.isArray(r.q3) || !!r.pair_mode };
   }
   function mark() {
-    const it = cur(), r = resp(it), ok = tieAllowed(r, it);
-    if ((r.q3 === TIE_ALL || r.q3 === TIE_NONE) && !ok[r.q3]) { r.q3 = null; save(); }   // Q1 changed: the tie no longer holds
-    const m = missing();
-    document.querySelectorAll("#q3btns button.tie").forEach(b => { b.disabled = !ok[b.dataset.pid]; });
+    const it = cur(), r = resp(it), m = missing();
     $("tieNote").textContent = T().tieNote;
     document.querySelectorAll(".panel").forEach(d => {
       d.querySelectorAll(".q1 button").forEach(b => b.classList.toggle("on", r.q1[d.dataset.pid] === b.dataset.v));
-      d.classList.toggle("chosen", r.q3 === d.dataset.pid);
+      d.classList.toggle("chosen", picked(r, d.dataset.pid));
       if (r.q1[d.dataset.pid]) d.classList.remove("need");
     });
     document.querySelectorAll("#q3btns button").forEach(b => {
-      b.classList.toggle("on", r.q3 === b.dataset.pid);
-      b.setAttribute("aria-checked", String(r.q3 === b.dataset.pid));
+      b.classList.toggle("on", picked(r, b.dataset.pid));
+      b.setAttribute("aria-checked", String(picked(r, b.dataset.pid)));
     });
-    if (r.q3) $("q3Box").classList.remove("need");
+    if (!m.q3) $("q3Box").classList.remove("need");
     const ready = !m.q1.length && !m.q3;
     $("nextBtn").textContent = it.kind === "practice" && !r.feedback_shown ? T().check :
       S.idx === S.order.length - 1 ? T().last : T().next;
-    $("nextHint").textContent = ready || !tried ? "" : m.q1.length ? T().needQ1(m.q1) : T().needQ3;
+    $("nextHint").textContent = ready || !tried ? "" : m.q1.length ? T().needQ1(m.q1) : m.pair ? T().needPair : T().needQ3;
   }
   function flashMissing() {
     const it = cur(), r = resp(it);
     tried = true; mark();
     document.querySelectorAll(".panel").forEach(d => { if (!r.q1[d.dataset.pid]) { d.classList.add("need", "flash"); setTimeout(() => d.classList.remove("flash"), 650); } });
-    if (!r.q3) { $("q3Box").classList.add("need", "flash"); setTimeout(() => $("q3Box").classList.remove("flash"), 650); }
+    if (missing().q3) { $("q3Box").classList.add("need", "flash"); setTimeout(() => $("q3Box").classList.remove("flash"), 650); }
   }
   function renderFeedback() {
     const it = cur(), r = resp(it), fb = $("feedback");
