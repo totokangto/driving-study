@@ -138,7 +138,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <div class="grid2">
           <div>
             <h2>Q3: "설명에 가장 맞는 결과"로 고른 비율 (주 지표)</h2>
-            <p class="sub">본 문항만. 설명 다섯 가지 각각의 비율을 낸 뒤 평균합니다. 가는 선은 평가자 단위 bootstrap 95% 구간(2,000번), 점선은 우연 수준 1/3.</p>
+            <p class="sub">본 문항만. 설명 다섯 가지 각각의 비율을 낸 뒤 평균합니다. "비교할 수 없음"은 방법마다 1/3로 셉니다. 가는 선은 평가자 단위 bootstrap 95% 구간(2,000번), 점선은 우연 수준 1/3.</p>
             <div id="q3Bars"></div>
             <div id="q3Diff"></div>
           </div>
@@ -374,12 +374,13 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     const rows = [], checks = {};
     CUR.scenes.forEach(r => {
       const a = String(r.annotator_id), x = r.response || {};
-      if (!doneIds.has(a) || !x.q3 || !K[x.q3]) return;
-      if (x.kind === "check") { (checks[a] = checks[a] || []).push(K[x.q3].knob === (K[x.uid] || {}).claim); return; }
+      const tie = x.q3 === "all_match" || x.q3 === "none_match";      // "can't compare" (1/3 each, steer_analyze.py)
+      if (!doneIds.has(a) || !x.q3 || (!K[x.q3] && !tie)) return;
+      if (x.kind === "check") { (checks[a] = checks[a] || []).push(!tie && K[x.q3].knob === (K[x.uid] || {}).claim); return; }
       if (x.kind !== "main") return;
       const q1 = {};
       Object.entries(x.q1 || {}).forEach(([p, v]) => { if (K[p]) q1[K[p].method] = v === "yes"; });
-      rows.push({ a, claim: x.claim, chosen: K[x.q3].method, q1 });
+      rows.push({ a, claim: x.claim, chosen: tie ? x.q3 : K[x.q3].method, tie, q1 });
     });
     Object.entries(checks).forEach(([a, c]) => { CHECK[a] = { ok: c.filter(Boolean).length, n: c.length }; });
     const failed = new Set(Object.entries(CHECK).filter(([, c]) => c.ok < c.n).map(([a]) => a));
@@ -388,7 +389,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     function tableOf(sub) {           // claims x methods: Q3 share, Q1 rate (steer_analyze.table)
       return CLAIMS.map(c => {
         const rr = sub.filter(r => r.claim === c);
-        return { n: rr.length, q3: M.map(m => (rr.length ? mean(rr.map(r => +(r.chosen === m))) : NaN)),
+        return { n: rr.length, ties: rr.filter(r => r.tie).length, q3: M.map(m => (rr.length ? mean(rr.map(r => (r.tie ? 1 / 3 : +(r.chosen === m)))) : NaN)),
                  q1: M.map(m => (rr.length ? mean(rr.map(r => +!!r.q1[m])) : NaN)) };
       });
     }
@@ -422,10 +423,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     $("resLegend").innerHTML = M.map(m => `<span><i style="background:${COL(m)}"></i>${esc(L(m))}</span>`).join("");
     $("resBanner").innerHTML = `<b>중간 결과</b> · 끝까지 마친` + ($("dropFail").checked ? ` ${CUR.done.length}명` : "") +
       ($("dropFail").checked ? ` 중 확인 문항을 모두 맞힌 <b>${anns.length}명</b> 기준` : ` <b>${anns.length}명</b> 기준` + (failed.size ? ` (확인 문항 틀린 사람 ${failed.size}명 포함)` : "")) +
-      ` · 본 문항 응답 ${use.length}개 · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 analysis/steer_analyze.py 결과를 씁니다.`;
+      ` · 본 문항 응답 ${use.length}개 (비교할 수 없음: 모두 맞음 ${use.filter(r => r.chosen === "all_match").length}, 모두 틀림 ${use.filter(r => r.chosen === "none_match").length}개, 방법마다 1/3로 셈) · 목표 인원 없이 모으는 중이므로 수치는 사람이 늘면 바뀝니다. 논문에는 모집을 끝낸 뒤 analysis/steer_analyze.py 결과를 씁니다.`;
     const cellOf = (t, j) => `<span class="cell"><span class="meter"><div style="width:${Number.isNaN(t.q3[j]) ? 0 : 100 * t.q3[j]}%;background:${COL(M[j])}"></div></span>${pct(t.q3[j])}</span> <span class="small">/ ${pct(t.q1[j])}</span>`;
     table($("claimTable"), [
-      ["설명", t => CLAIMS.indexOf(t.c), t => esc(t.c)], ["응답 수", t => t.n, t => t.n, true],
+      ["설명", t => CLAIMS.indexOf(t.c), t => esc(t.c)], ["응답 수", t => t.n, t => t.n, true], ["비교 불가", t => t.ties, t => t.ties, true],
       ...M.map((m, j) => [`${L(m)} (Q3 / Q1)`, t => (Number.isNaN(t.q3[j]) ? -1 : t.q3[j]), t => cellOf(t, j)])
     ], T.map((t, i) => Object.assign({ c: CLAIMS[i] }, t)), "claimSort", ["설명", 1]);
     $("resBody").classList.remove("hidden");

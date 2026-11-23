@@ -104,6 +104,10 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
   margin: 0 2px; box-shadow: 0 0 0 1px #c7d7fb; }
 .claimtask { font-size: 15px; color: #374151; margin-top: 2px; }
 .claimtask b { color: var(--ink); }
+.verbword { display: inline-block; background: #fff; color: var(--accent); font-weight: 800; padding: 0 8px; border-radius: 6px;
+  margin: 0 2px; box-shadow: 0 0 0 1px #c7d7fb; font-size: 16px; }
+.claimsafety { font-size: 13px; color: #92400e; background: #fef3c7; border-radius: 8px; padding: 4px 10px; margin-top: 6px; display: inline-block; }
+.claimsafety b { color: #78350f; }
 .egobox { grid-area: ego; display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; font-size: 14px; color: #374151;
   background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; }
 .egorow b { font-size: 16px; color: var(--ink); }
@@ -121,7 +125,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .paneltitle .num { width: 24px; height: 24px; border-radius: 50%; background: var(--soft); color: #374151; display: grid; place-items: center; font-size: 13px; }
 .panel.chosen .paneltitle .num { background: var(--accent); color: #fff; }
 /* the three maps, both questions and Next fit in one window where possible (a result below the fold could bias the choice) */
-.panel canvas { width: min(100%, max(240px, calc(100vh - 470px))); aspect-ratio: 1 / 1; display: block; margin: 0 auto;
+.panel canvas { width: min(100%, max(240px, calc(100vh - 540px))); aspect-ratio: 1 / 1; display: block; margin: 0 auto;
   border-radius: 8px; background: #eef0f2; }
 .speed { margin: 6px 0 4px; font-size: 14px; color: #374151; }
 .speed b { font-size: 17px; color: var(--ink); }
@@ -136,6 +140,10 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .q3btns { display: flex; gap: 8px; }
 .q3btns button { min-width: 92px; font-weight: 700; }
 .q3btns button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.q3btns { flex-wrap: wrap; align-items: center; }
+.q3btns button.tie { min-width: 0; font-weight: 500; font-size: 13px; padding: 6px 10px; border-style: dashed; }
+.q3btns button.tie.on { border-style: solid; }
+.tienote { flex-basis: 100%; text-align: center; font-size: 12px; color: var(--muted); margin: 2px 0 0; }
 .feedback { border-radius: 10px; padding: 10px 14px; margin: 8px 0; line-height: 1.6; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
 .feedback.wrong { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
 .feedback .hint { color: inherit; opacity: .85; }

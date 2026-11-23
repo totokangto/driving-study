@@ -11,7 +11,8 @@
   const ORIG_C = "#f08a4b", STEER_C = "#3b6fd4";
   const CAR = [[4.05, 1.15], [4.05, -1.15], [-1.13, -1.15], [-1.13, 1.15]];   // ego box (forward, left) m, Fig. 6 map
   const ID_RE = /^[A-Za-z0-9_-]{2,32}$/;
-  const SEC_PER_ITEM = 35;
+  const TIE_ALL = "all_match", TIE_NONE = "none_match";   // Q3 values besides a panel id
+  const MINUTES = 15;                                      // shown on the start page (decided 2026-11-23)
   const byUid = Object.fromEntries(M.items.map(it => [it.uid, it]));
   const N_PRACTICE = M.items.filter(it => it.kind === "practice").length, N_STUDY = M.items.length - N_PRACTICE;
 
@@ -33,7 +34,7 @@
       lgDots: "선 위의 점: 0.5초마다 차가 있을 위치 (점 간격이 넓을수록 빠름)",
       lgPlay: "두 차가 두 경로를 따라 <b>2배속</b>으로 움직입니다 (실제 4초를 2초에 재생).",
       lgOrigS: "원래 경로", lgSteerS: "뉴런 묶음을 켠 뒤",
-      keynote: "정답이 정해진 문항이 아닙니다. 파란 경로가 설명한 행동대로 바뀌었는지, 보이는 대로 판단해 주세요.",
+      keynote: "정답이 정해진 문항이 아닙니다. 파란 경로가 설명한 행동대로 바뀌었는지, 보이는 대로 판단해 주세요. 뉴런 묶음을 강하게 켜면 경로가 도로를 벗어나거나 다른 차와 부딪히기도 하는데, <b>안전성은 무시</b>하고 행동만 봐 주세요.",
       meta: (p, n, min) => [`연습 ${p}문항 + 본 문항 ${n}개`, `약 ${min}분`, "마지막에 짧은 설문", "진행 상황 자동 저장", "언제든 '도움말'로 다시 보기"],
       idLabel: "평가자 ID", idHint: "영문과 숫자 2자 이상 (예: P01).",
       idResumeNote: "같은 PC·같은 브라우저에서 같은 ID로 다시 들어오면 이어서 할 수 있습니다. 처음 참여하는데 이어서 한다는 안내가 나오면 이미 다른 사람이 쓰는 ID이니 다른 ID를 입력해 주세요.",
@@ -46,18 +47,22 @@
       help: "도움말", helpTitle: "진행 방법", tourAgain: "화면 안내 다시 보기", close: "닫기",
       stagePractice: "연습", stageMain: "본 문항",
       claimLine: w => `모델 안의 이 뉴런 묶음은 <span class="claimword">${w}</span>${josa(w)} 담당한다고 합니다.`,
-      claimTask: v => `이 뉴런 묶음을 강하게 켰을 때 차가 정말 <b>${v}</b> 파란 경로를 보고 확인해 주세요.`,
+      claimTask: v => `이 뉴런 묶음을 강하게 켰을 때 차가 정말 <span class="verbword">${v}</span> 파란 경로를 보고 확인해 주세요.`,
+      safety: "⚠ 도로를 벗어나거나 다른 차와 부딪히는 등 <b>경로의 안전성은 무시</b>하고, 설명한 행동대로 바뀌었는지만 봐 주세요.",
       verb: { "좌회전": "왼쪽으로 꺾는지", "우회전": "오른쪽으로 꺾는지", "정지": "멈추는지", "가속": "빨라지는지", "감속": "느려지는지" },
       q1: { "좌회전": "정말 왼쪽으로 꺾었나요?", "우회전": "정말 오른쪽으로 꺾었나요?", "정지": "정말 멈췄나요?",
             "가속": "정말 빨라졌나요?", "감속": "정말 느려졌나요?" },
       camCap: "전방 카메라 (왼쪽 | 앞 | 오른쪽)", egoSpeed: "현재 속도", egoCmd: "내비 지시", replay: "⟲ 다시 재생",
       result: k => `결과 ${k}`,
+      unit: "km/h", spd: v => String(Math.round(v)),
       speed: (a, b) => `4초 뒤 속도: 원래 <b>${a}</b> → <b>${b}</b> km/h`,
       yes: "예", no: "아니오",
       q3: w => `셋 중 "${w}" 설명에 <b>가장 맞는 결과</b>는?`,
       prev: "← 이전", next: "다음 →", check: "정답 확인", last: "마지막 문항 끝내기",
       needQ1: ks => `${ks.map(k => `결과 ${k}`).join(", ")}의 질문(예/아니오)에 답해 주세요.`,
       needQ3: "셋 중 설명에 가장 맞는 결과를 골라 주세요.",
+      tieAll: "비교할 수 없음 (모두 맞음)", tieNone: "비교할 수 없음 (모두 틀림)",
+      tieNote: "'비교할 수 없음'은 위 세 질문이 모두 '예'이거나 모두 '아니오'일 때만 고를 수 있습니다. 둘이 비슷하면 그중 더 잘 맞는 하나를 골라 주세요.",
       keys: "<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 가장 맞는 결과 · <kbd>R</kbd> 다시 재생 · <kbd>Enter</kbd> 다음",
       fbOk: "맞았습니다.", fbWrong: k => `이번에는 결과 ${k}${k === 2 ? "가" : "이"} 정답입니다.`,   // 1 일, 3 삼 -> 이; 2 이 -> 가
       fbAfter: "본 문항부터는 정답을 알려 드리지 않습니다. 정답이 정해지지 않은 문항도 있으니 보이는 대로 판단해 주세요.",
@@ -65,11 +70,11 @@
       practiceDoneText: n => `이제 본 문항 ${n}개입니다. 연습과 같은 방식으로 진행하세요. 응답은 자동으로 저장됩니다.`,
       tourSkip: "건너뛰기", tourNext: "다음", tourDone: "직접 해 보기",
       tour: [
-        "먼저 <b>설명</b>을 읽으세요. 이 뉴런 묶음이 어떤 행동을 담당한다고 주장하는지 나옵니다.",
+        "먼저 <b>설명</b>을 읽으세요. 이 뉴런 묶음이 어떤 행동을 담당한다고 주장하는지, 무엇을 확인할지가 나옵니다. 경로의 <b>안전성은 무시</b>하고 그 행동만 보면 됩니다.",
         "<b>전방 카메라</b>와 현재 속도, 내비 지시로 상황을 파악하세요. <b>⟲ 다시 재생</b>으로 움직임을 처음부터 다시 볼 수 있습니다.",
         "세 팀의 뉴런 묶음을 각각 켠 <b>결과 세 개</b>입니다. <b>주황 선</b>(원래 경로)과 <b>파란 선</b>(켠 뒤 경로)을 비교하세요. 두 차가 경로를 따라 2배속으로 움직입니다.",
         "결과마다 차가 <b>설명대로 움직였는지</b> 예/아니오로 고르세요.",
-        "마지막으로 셋 중 설명에 <b>가장 맞는 결과</b>를 고르세요 (숫자키 1–3).",
+        "마지막으로 셋 중 설명에 <b>가장 맞는 결과</b>를 고르세요 (숫자키 1–3). 세 결과가 모두 맞거나 모두 틀렸으면 <b>비교할 수 없음</b>을 고를 수 있습니다.",
         "다 골랐으면 <b>다음</b>. 지금은 연습 문항이라 고른 뒤 정답을 알려 드립니다. 직접 해 보세요!"
       ],
       svTitle: "마지막으로 몇 가지만 알려 주세요", svLead: "결과를 해석할 때만 씁니다. 각 질문에 하나씩 골라 주세요.",
@@ -106,7 +111,7 @@
       lgDots: "Dots on a line: where the car will be every 0.5 s (wider spacing = faster)",
       lgPlay: "Two cars move along the two paths at <b>2× speed</b> (4 s shown in 2 s).",
       lgOrigS: "original path", lgSteerS: "neuron set activated",
-      keynote: "There is no fixed right or wrong. Judge, as you see it, whether the blue path changed in the claimed way.",
+      keynote: "There is no fixed right or wrong. Judge, as you see it, whether the blue path changed in the claimed way. Strong activation often sends the path off the road or into other cars: <b>ignore safety</b> and look only at the behaviour.",
       meta: (p, n, min) => [`${p} practice + ${n} items`, `about ${min} min`, "a short survey at the end", "progress saved automatically", "'Help' shows this again"],
       idLabel: "Participant ID", idHint: "Letters and digits, at least 2 (e.g. P01).",
       idResumeNote: "Coming back with the same ID on the same computer and browser continues where you left off. If you are new and see a note about continuing, that ID is taken: please enter another one.",
@@ -119,19 +124,23 @@
       help: "Help", helpTitle: "How it works", tourAgain: "Show the screen tour again", close: "Close",
       stagePractice: "Practice", stageMain: "Study",
       claimLine: w => `This neuron set in the model is said to be responsible for <span class="claimword">${w}</span>.`,
-      claimTask: v => `Check with the blue path whether the car really <b>${v}</b> when this neuron set is strongly activated.`,
+      claimTask: v => `Check with the blue path whether the car really <span class="verbword">${v}</span> when this neuron set is strongly activated.`,
+      safety: "⚠ <b>Ignore whether the path is safe</b> (leaving the road or hitting other cars does not matter here); only check whether it changes as claimed.",
       verb: { "좌회전": "turns left", "우회전": "turns right", "정지": "stops", "가속": "speeds up", "감속": "slows down" },
       q1: { "좌회전": "Did it really turn left?", "우회전": "Did it really turn right?", "정지": "Did it really stop?",
             "가속": "Did it really speed up?", "감속": "Did it really slow down?" },
       claimName: { "좌회전": "turning left", "우회전": "turning right", "정지": "stopping", "가속": "speeding up", "감속": "slowing down" },
       camCap: "Front camera (left | front | right)", egoSpeed: "Current speed", egoCmd: "Route command", replay: "⟲ Replay",
       result: k => `Result ${k}`,
-      speed: (a, b) => `Speed after 4 s: original <b>${a}</b> → <b>${b}</b> km/h`,
+      unit: "m/s", spd: v => (v / 3.6).toFixed(1),
+      speed: (a, b) => `Speed after 4 s: original <b>${a}</b> → <b>${b}</b> m/s`,
       yes: "Yes", no: "No",
       q3: w => `Which result <b>best matches</b> the claim "${w}"?`,
       prev: "← Back", next: "Next →", check: "Check", last: "Finish the last item",
       needQ1: ks => `Please reply yes/no for ${ks.map(k => `Result ${k}`).join(", ")}.`,
       needQ3: "Please pick the result that best matches the claim.",
+      tieAll: "Can't compare (all match)", tieNone: "Can't compare (none match)",
+      tieNote: "'Can't compare' is available only when all three replies above are 'Yes' (or all 'No'). If two look alike, pick the one that matches better.",
       keys: "<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> best match · <kbd>R</kbd> replay · <kbd>Enter</kbd> next",
       fbOk: "Correct.", fbWrong: k => `This time Result ${k} is the correct one.`,
       fbAfter: "From now on no feedback is given. Some items have no single correct result, so judge as you see it.",
@@ -140,11 +149,11 @@
       practiceDoneText: n => `Next come the ${n} study items. Work the same way as in the practice. Your responses are saved automatically.`,
       tourSkip: "Skip", tourNext: "Next", tourDone: "Try it",
       tour: [
-        "First read the <b>claim</b>: which behaviour this neuron set is said to be responsible for.",
+        "First read the <b>claim</b>: which behaviour this neuron set is said to be responsible for, and what to check. <b>Ignore safety</b>; look only at that behaviour.",
         "Get the situation from the <b>front camera</b>, the current speed and the route command. <b>⟲ Replay</b> restarts the motion.",
         "These are the <b>three results</b>, one per team's neuron set. Compare the <b>orange line</b> (original path) with the <b>blue line</b> (after activation). Two cars move along the paths at 2× speed.",
         "For each result, say whether the car <b>moved as claimed</b> (yes/no).",
-        "Finally pick the result that <b>best matches</b> the claim (keys 1–3).",
+        "Finally pick the result that <b>best matches</b> the claim (keys 1–3). If all three match, or none does, you may choose <b>Can't compare</b>.",
         "When done, press <b>Next</b>. This is a practice item, so you will see the correct result. Try it!"
       ],
       svTitle: "A few last questions", svLead: "Used only to interpret the results. Please pick one option for each question.",
@@ -274,7 +283,7 @@
       if (typeof v === "string") { if (v.includes("<")) el.innerHTML = v; else el.textContent = v; }
     });
     document.querySelectorAll(".langbtn").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
-    const min = Math.max(5, Math.ceil((M.items.length * SEC_PER_ITEM) / 60 / 5) * 5);
+    const min = MINUTES;
     $("meta").innerHTML = T().meta(N_PRACTICE, N_STUDY, min).map(x => `<li>${x}</li>`).join("");
     $("helpSteps").innerHTML = "";
     $("helpSteps").appendChild($("steps").cloneNode(true)).removeAttribute("id");
@@ -358,9 +367,11 @@
     $("progressFill").style.width = `${100 * S.idx / S.order.length}%`;
     $("claimLine").innerHTML = T().claimLine(w);
     $("claimTask").innerHTML = T().claimTask(T().verb[it.claim]);
+    $("claimSafety").innerHTML = T().safety;
     $("q3Label").innerHTML = T().q3(w);
     $("cam").src = "images/" + it.camera;
-    $("egoSpeed").textContent = it.ego_speed_kmh;
+    $("egoSpeed").textContent = T().spd(it.ego_speed_kmh);
+    $("egoUnit").textContent = T().unit;
     $("egoCmd").textContent = cmdWord(it);
     $("prevBtn").disabled = S.idx === 0;
     const pan = $("panels");
@@ -373,7 +384,7 @@
       d.className = "panel";
       d.dataset.pid = pid;
       d.innerHTML = `<div class="paneltitle"><span class="num">${k + 1}</span>${T().result(k + 1)}</div><canvas></canvas>
-        <div class="speed">${T().speed(Math.round(it.orig.vend), Math.round(p.vend))}</div>
+        <div class="speed">${T().speed(T().spd(it.orig.vend), T().spd(p.vend))}</div>
         <div class="q1"><span class="q1text">${T().q1[it.claim]}</span><button data-v="yes">${T().yes}</button><button data-v="no">${T().no}</button></div>`;
       d.querySelectorAll(".q1 button").forEach(b => b.addEventListener("click", () => { r.q1[pid] = b.dataset.v; save(); mark(); }));
       pan.appendChild(d);
@@ -389,6 +400,15 @@
       b.addEventListener("click", () => chooseQ3(pid));
       q3.appendChild(b);
     });
+    // ties (2026-11-23): only when the item's own Q1 replies agree (all yes / all no), so they are not an easy way out;
+    // two results that look alike still need one pick. Analysis: each method gets 1/3 (steer_analyze.py)
+    [[TIE_ALL, T().tieAll], [TIE_NONE, T().tieNone]].forEach(([v, label]) => {
+      const b = document.createElement("button");
+      b.textContent = label; b.dataset.pid = v; b.className = "tie"; b.title = T().tieNote;
+      b.setAttribute("role", "radio");
+      b.addEventListener("click", () => { if (!b.disabled) chooseQ3(v); });
+      q3.appendChild(b);
+    });
     renderFeedback();
     img.onload = () => { sizeCanvases(); if (!keepClock) restart(); };
     img.src = "images/" + it.map;
@@ -402,8 +422,16 @@
     const q1 = order.map((pid, k) => (r.q1[pid] ? null : k + 1)).filter(k => k !== null);
     return { q1, q3: !r.q3 };
   }
+  function tieAllowed(r, it) {                             // which tie button the Q1 replies allow
+    const v = it.panels.map(p => r.q1[p.pid]);
+    return { [TIE_ALL]: v.every(x => x === "yes"), [TIE_NONE]: v.every(x => x === "no") };
+  }
   function mark() {
-    const it = cur(), r = resp(it), m = missing();
+    const it = cur(), r = resp(it), ok = tieAllowed(r, it);
+    if ((r.q3 === TIE_ALL || r.q3 === TIE_NONE) && !ok[r.q3]) { r.q3 = null; save(); }   // Q1 changed: the tie no longer holds
+    const m = missing();
+    document.querySelectorAll("#q3btns button.tie").forEach(b => { b.disabled = !ok[b.dataset.pid]; });
+    $("tieNote").textContent = T().tieNote;
     document.querySelectorAll(".panel").forEach(d => {
       d.querySelectorAll(".q1 button").forEach(b => b.classList.toggle("on", r.q1[d.dataset.pid] === b.dataset.v));
       d.classList.toggle("chosen", r.q3 === d.dataset.pid);
