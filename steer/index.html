@@ -3,93 +3,189 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>뉴런 묶음 평가</title>
-<link rel="stylesheet" href="style.css?v=115b89e25f">
+<title>Neuron Set Study</title>
+<link rel="stylesheet" href="style.css?v=13edb4c2d2">
 </head>
 <body>
-<main id="app">
-  <div id="syncBadge" class="sync hidden"></div>
+<!-- ============================================================ start -->
+<div id="start" class="screen">
+  <div class="intro">
+    <div class="introhead">
+      <h1 data-t="title"></h1>
+      <div class="lang"><button data-lang="ko" class="langbtn">한국어</button><button data-lang="en" class="langbtn">English</button></div>
+    </div>
+    <p class="lead" data-t="lead"></p>
+    <p id="smallScreen" class="notice phone hidden" data-t="smallScreen"></p>
 
-  <!-- start -->
-  <section id="start" class="screen">
-    <h1>자율주행 모델의 뉴런 묶음 평가</h1>
-    <div class="card intro">
-      <p>자율주행 모델은 사람의 뇌처럼 수많은 <b>인공 뉴런</b>이 신호를 주고받으며 운전을 결정합니다.</p>
-      <p>세 연구팀이 각자 "이 <b>뉴런 묶음</b>이 ○○ 행동을 담당한다"고 주장합니다.
-        그 뉴런 묶음을 <b>강하게 켰을 때</b> 차의 계획 경로가 어떻게 바뀌는지 보여 드립니다.
-        어느 팀의 뉴런 묶음이 <b>정말 그 설명대로</b> 차를 움직이는지 판단해 주세요.</p>
-      <ul class="legend-list">
-        <li><span class="sw sw-orig"></span> 주황 선: 원래 계획 경로</li>
-        <li><span class="sw sw-steer"></span> 파란 선: 뉴런 묶음을 켠 뒤의 계획 경로</li>
-        <li><span class="dot"></span> 선 위의 점: 0.5초마다 차가 있을 위치 (점 간격이 넓을수록 빠름)</li>
-        <li>지도 위의 두 차는 두 경로를 따라 <b>2배속</b>으로 움직입니다(실제 4초를 2초에 재생).</li>
-      </ul>
-      <p>모두 <b>28문항</b>(연습 1문항 포함)과 짧은 설문이 있고, 약 18분 걸립니다. PC나 노트북에서 해 주세요.
-        정답이 정해진 문항이 아니므로 보이는 대로 답해 주세요.</p>
-    </div>
-    <label class="idrow">평가자 ID (영문·숫자) <input id="annId" autocomplete="off" maxlength="32" placeholder="예: p07"></label>
-    <p id="idNote" class="note"></p>
-    <button id="startBtn" class="primary" disabled>시작</button>
-  </section>
+    <ol class="steps" id="steps">
+      <li class="step">
+        <div class="ill ill1"><div class="mockclaim"><span data-t="ex1a"></span> <b data-t="ex1b"></b><span data-t="ex1c"></span></div></div>
+        <div class="stepnum">1</div>
+        <h3 data-t="s1t"></h3>
+        <p data-t="s1d"></p>
+      </li>
+      <li class="step">
+        <div class="ill ill2">
+          <svg viewBox="0 0 240 112" aria-hidden="true">
+            <rect width="240" height="112" fill="#eceff3"/>
+            <rect x="88" y="0" width="64" height="112" fill="#d5d9df"/>
+            <path d="M120 4 v12 M120 26 v12 M120 48 v12 M120 70 v12 M120 92 v12" stroke="#fff" stroke-width="2"/>
+            <path d="M108 96 L108 40" stroke="#f08a4b" stroke-width="3.4" stroke-opacity=".75" stroke-linecap="round"/>
+            <g fill="#f08a4b" fill-opacity=".75"><circle cx="108" cy="82" r="3"/><circle cx="108" cy="68" r="3"/><circle cx="108" cy="54" r="3"/><circle cx="108" cy="40" r="3"/></g>
+            <path d="M108 96 C108 70 112 52 132 36 S168 18 196 14" fill="none" stroke="#3b6fd4" stroke-width="5" stroke-opacity=".75" stroke-linecap="round"/>
+            <g fill="#3b6fd4" fill-opacity=".75"><circle cx="109" cy="74" r="3.6"/><circle cx="117" cy="52" r="3.6"/><circle cx="140" cy="31" r="3.6"/><circle cx="170" cy="19" r="3.6"/></g>
+            <rect x="102" y="40" width="12" height="20" rx="2" fill="#f08a4b" stroke="#fff" stroke-width="1.5"/>
+            <rect x="176" y="10" width="20" height="12" rx="2" fill="#3b6fd4" stroke="#fff" stroke-width="1.5" transform="rotate(-14 186 16)"/>
+            <text x="20" y="100" font-size="10.5" font-weight="700" fill="#c2410c" data-t="illOrig"></text>
+            <text x="166" y="44" font-size="10.5" font-weight="700" fill="#1d4ed8" data-t="illSteer"></text>
+          </svg>
+        </div>
+        <div class="stepnum">2</div>
+        <h3 data-t="s2t"></h3>
+        <p data-t="s2d"></p>
+      </li>
+      <li class="step">
+        <div class="ill ill3">
+          <div class="mockq1"><span data-t="ex3q"></span><span class="mb on" data-t="yes"></span><span class="mb" data-t="no"></span></div>
+          <div class="mockq3"><span class="mb" data-t="ex3r1"></span><span class="mb on" data-t="ex3r2"></span><span class="mb" data-t="ex3r3"></span></div>
+          <div class="mocknext" data-t="next"></div>
+        </div>
+        <div class="stepnum">3</div>
+        <h3 data-t="s3t"></h3>
+        <p data-t="s3d"></p>
+      </li>
+    </ol>
 
-  <!-- trial -->
-  <section id="trial" class="screen hidden">
-    <header class="trial-head">
-      <div class="claim-box">
-        <div class="claim">모델 안의 이 뉴런 묶음은 <span id="claim" class="claim-word"></span><span id="josa"></span> 담당한다고 합니다.</div>
-        <div class="claim-task">이 뉴런 묶음을 강하게 켰을 때 차가 정말 <b id="claimVerb"></b> 파란 경로를 보고 확인해 주세요.</div>
+    <ul class="legendbox" id="legendBox">
+      <li><span class="sw sw-orig"></span><span data-t="lgOrig"></span></li>
+      <li><span class="sw sw-steer"></span><span data-t="lgSteer"></span></li>
+      <li><span class="dot"></span><span data-t="lgDots"></span></li>
+      <li><span class="car"></span><span data-t="lgPlay"></span></li>
+    </ul>
+    <p class="keynote" data-t="keynote"></p>
+    <ul class="meta" id="meta"></ul>
+
+    <div class="idbox">
+      <label for="annId" data-t="idLabel"></label>
+      <div class="idrow">
+        <input id="annId" autocomplete="off" spellcheck="false" placeholder="P01" maxlength="32" aria-describedby="idHint">
+        <button id="startBtn" class="primary big" disabled data-t="start"></button>
       </div>
-      <div class="prog"><span id="practiceTag" class="tag hidden">연습</span><span id="prog"></span></div>
-    </header>
-    <div class="context">
-      <figure class="cam"><img id="cam" alt="전방 카메라"><figcaption>전방 카메라 (왼쪽 | 앞 | 오른쪽)</figcaption></figure>
-      <div class="ego">
-        <div>현재 속도 <b id="egoSpeed"></b> km/h</div>
-        <div>내비 지시 <b id="egoCmd"></b></div>
-        <div class="legend-mini"><span class="sw sw-orig"></span> 원래 경로 <span class="sw sw-steer"></span> 뉴런 묶음을 켠 뒤</div>
-        <button id="replayBtn" class="ghost">⟲ 다시 재생</button>
+      <p id="idHint" class="hint" data-t="idHint"></p>
+      <p class="hint" data-t="idResumeNote"></p>
+      <p id="resumeNote" class="resume hidden"></p>
+      <p id="idTaken" class="taken hidden"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ trial -->
+<div id="trial" class="screen hidden">
+  <header class="bar">
+    <span id="stageTag" class="tag"></span>
+    <div class="progress" aria-hidden="true"><div id="progressFill"></div></div>
+    <span id="progressText" class="ptext"></span>
+    <span id="syncBadge" class="sync hidden"></span>
+    <button id="helpBtn" class="ghost small" data-t="help"></button>
+  </header>
+  <div id="rotateHint" class="rotate hidden" data-t="rotate"></div>
+  <main class="trialbody">
+    <section class="top">
+      <div class="claimbox" id="claimBox">
+        <div class="claim" id="claimLine"></div>
+        <div class="claimtask" id="claimTask"></div>
       </div>
-    </div>
-    <div id="panels" class="panels"></div>
-    <div class="q3">
-      <span class="q3-label">셋 중 "<span id="claim2"></span>" 설명에 <b>가장 맞는 것</b>은?</span>
-      <div id="q3btns" class="q3btns"></div>
-    </div>
+      <div class="egobox" id="egoBox">
+        <span class="egorow"><span data-t="egoSpeed"></span> <b id="egoSpeed"></b> km/h</span>
+        <span class="egorow"><span data-t="egoCmd"></span> <b id="egoCmd"></b></span>
+        <span class="legend-mini"><span class="sw sw-orig"></span><span data-t="lgOrigS"></span><span class="sw sw-steer"></span><span data-t="lgSteerS"></span></span>
+        <button id="replayBtn" class="ghost small" data-t="replay"></button>
+      </div>
+      <figure class="cam" id="camBox"><img id="cam" alt=""><figcaption data-t="camCap"></figcaption></figure>
+    </section>
+    <section id="panels" class="panels"></section>
     <div id="feedback" class="feedback hidden"></div>
-    <footer class="nav">
-      <button id="prevBtn" class="ghost">이전</button>
-      <span id="hint" class="note">각 결과의 질문과 마지막 질문에 모두 답하면 다음으로 넘어갈 수 있습니다.</span>
-      <button id="nextBtn" class="primary" disabled>다음</button>
+    <footer class="nav" id="navBox">
+      <button id="prevBtn" class="ghost" data-t="prev"></button>
+      <div class="q3" id="q3Box">
+        <span class="q3label" id="q3Label"></span>
+        <div id="q3btns" class="q3btns" role="radiogroup"></div>
+      </div>
+      <button id="nextBtn" class="primary big" data-t="next"></button>
     </footer>
-  </section>
+    <div class="belownav"><p id="nextHint" class="nexthint"></p><p class="keys" data-t="keys"></p></div>
+  </main>
+</div>
 
-  <!-- survey -->
-  <section id="survey" class="screen hidden">
-    <h1>마지막으로 몇 가지만 알려 주세요</h1>
-    <div class="card">
-      <div id="svForm" class="survey"></div>
-      <label class="svq-free">하고 싶은 말이 있으면 적어 주세요 (선택)
-        <textarea id="comment" rows="3"></textarea></label>
+<!-- ============================================================ survey -->
+<div id="survey" class="screen hidden">
+  <div class="intro narrow">
+    <h1 data-t="svTitle"></h1>
+    <p class="lead" data-t="svLead"></p>
+    <div id="svForm" class="survey"></div>
+    <label class="svfree"><span data-t="svFree"></span><textarea id="comment" rows="3"></textarea></label>
+    <p id="svHint" class="nexthint"></p>
+    <div class="row">
+      <button id="svBack" class="ghost" data-t="svBack"></button>
+      <button id="svSubmit" class="primary big" data-t="svSubmit" disabled></button>
     </div>
-    <footer class="nav">
-      <button id="svBack" class="ghost">문항으로 돌아가기</button>
-      <button id="svSubmit" class="primary" disabled>제출</button>
-    </footer>
-  </section>
+  </div>
+</div>
 
-  <!-- done -->
-  <section id="done" class="screen hidden">
-    <h1>수고하셨습니다</h1>
-    <div class="card">
-      <p id="doneStatus"></p>
-      <button id="dlBtn">결과 파일 내려받기</button>
-      <p id="dlNote" class="note"></p>
+<!-- ============================================================ done -->
+<div id="done" class="screen hidden">
+  <div class="intro narrow center">
+    <div class="bigcheck">✓</div>
+    <h1 data-t="doneTitle"></h1>
+    <p id="doneText"></p>
+    <p id="doneSync" class="syncline hidden"></p>
+    <div class="row">
+      <button id="retryBtn" class="primary hidden" data-t="retry"></button>
+      <button id="dlBtn" class="primary" data-t="download"></button>
+      <button id="homeBtn" class="ghost" data-t="home"></button>
     </div>
-  </section>
-</main>
+    <p id="dlNote" class="hint"></p>
+  </div>
+</div>
+
+<!-- ============================================================ overlays -->
+<div id="helpModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modalcard">
+    <h2 data-t="helpTitle"></h2>
+    <div id="helpSteps"></div>
+    <div id="helpLegend"></div>
+    <p class="keynote" data-t="keynote"></p>
+    <div class="row end">
+      <button id="tourBtn" class="ghost" data-t="tourAgain"></button>
+      <button id="helpClose" class="primary" data-t="close"></button>
+    </div>
+  </div>
+</div>
+
+<div id="practiceModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modalcard center">
+    <div class="bigcheck">✓</div>
+    <h2 data-t="practiceDoneTitle"></h2>
+    <p id="practiceDoneText"></p>
+    <button id="practiceGo" class="primary big" data-t="practiceDoneGo"></button>
+  </div>
+</div>
+
+<div id="tour" class="tour hidden">
+  <div class="tourhole" id="tourHole"></div>
+  <div class="tourtip" id="tourTip" role="dialog">
+    <div class="tourstep" id="tourStep"></div>
+    <p id="tourText"></p>
+    <div class="row end">
+      <button id="tourSkip" class="ghost small" data-t="tourSkip"></button>
+      <button id="tourNext" class="primary small"></button>
+    </div>
+  </div>
+</div>
+
 <script src="config.js?v=2608ae7cce"></script>
 <script src="data/manifest.js?v=43a2a60e8e"></script>
 <script src="core.js?v=fc119a5aee"></script>
-<script src="app.js?v=8d071b08a6"></script>
+<script src="app.js?v=c246339a31"></script>
 </body>
 </html>
