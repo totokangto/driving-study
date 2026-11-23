@@ -22,8 +22,6 @@
     ko: {
       title: "자율주행 모델의 뉴런 묶음 평가",
       lead: "자율주행 모델은 사람의 뇌처럼 수많은 <b>인공 뉴런</b>이 신호를 주고받으며 운전을 결정합니다. 세 연구팀이 각자 \"이 <b>뉴런 묶음</b>이 ○○ 행동을 담당한다\"고 주장합니다. 그 뉴런 묶음을 <b>강하게 켰을 때</b> 차의 계획 경로가 어떻게 바뀌는지 보여 드립니다. 어느 팀의 뉴런 묶음이 <b>정말 그 설명대로</b> 차를 움직이는지 판단해 주세요.",
-      smallScreen: "📱 휴대폰으로 참여한다면 화면을 <b>가로</b>로 돌려 주세요. 지도 세 개를 비교해야 하므로 PC나 노트북을 권장합니다.",
-      rotate: "📱 휴대폰을 가로로 돌리면 지도를 더 크게 볼 수 있습니다.",
       ex1a: "이 뉴런 묶음은", ex1b: "감속", ex1c: "을 담당한다고 합니다.",
       s1t: "설명 읽기", s1d: "화면 위 파란 칸에 이 뉴런 묶음이 담당한다는 행동이 나옵니다.",
       illOrig: "원래 경로", illSteer: "켠 뒤 경로",
@@ -100,8 +98,6 @@
     en: {
       title: "Neuron Sets in a Driving Model",
       lead: "A self-driving model decides how to drive through many <b>artificial neurons</b> that pass signals to each other, much like a human brain. Three research teams each claim that \"this <b>neuron set</b> is responsible for a certain behaviour\". We show how the car's planned path changes when that neuron set is <b>strongly activated</b>. Please judge which team's neuron set <b>really moves the car as claimed</b>.",
-      smallScreen: "📱 On a phone, please turn the screen <b>sideways</b>. You compare three maps, so a PC or laptop is recommended.",
-      rotate: "📱 Turn the phone sideways to see the maps larger.",
       ex1a: "This neuron set is said to be responsible for", ex1b: "slowing down", ex1c: "",
       s1t: "Read the claim", s1d: "The blue box at the top says which behaviour this neuron set is claimed to be responsible for.",
       illOrig: "original path", illSteer: "activated",
@@ -306,11 +302,6 @@
   }));
 
   // ------------------------------------------------------------ start screen
-  const HOVERLESS = window.matchMedia("(hover: none)").matches;
-  function checkScreen() {
-    $("smallScreen").classList.toggle("hidden", window.innerWidth >= 1000 && !HOVERLESS);
-    $("rotateHint").classList.toggle("hidden", !(window.matchMedia("(orientation: portrait)").matches && window.innerWidth < 760));
-  }
   function onId() {
     const inp = $("annId"), raw = inp.value, up = raw.toUpperCase();
     if (raw !== up) { const p = inp.selectionStart; inp.value = up; inp.setSelectionRange(p, p); }
@@ -716,7 +707,6 @@
   $("dlBtn").addEventListener("click", download);
   $("retryBtn").addEventListener("click", () => { fails = 0; setFinal("sending"); clearTimeout(retryTimer); flush(); });
   $("homeBtn").addEventListener("click", goHome);
-  window.addEventListener("resize", () => { checkScreen(); if (canvases.length) sizeCanvases(); placeTour(); });
-  checkScreen();
+  window.addEventListener("resize", () => { if (canvases.length) sizeCanvases(); placeTour(); });
   applyLang();
 })();
