@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>뉴런 묶음 평가</title>
+<link rel="stylesheet" href="style.css?v=115b89e25f">
+</head>
+<body>
+<main id="app">
+  <div id="syncBadge" class="sync hidden"></div>
+
+  <!-- start -->
+  <section id="start" class="screen">
+    <h1>자율주행 모델의 뉴런 묶음 평가</h1>
+    <div class="card intro">
+      <p>자율주행 모델은 사람의 뇌처럼 수많은 <b>인공 뉴런</b>이 신호를 주고받으며 운전을 결정합니다.</p>
+      <p>세 연구팀이 각자 "이 <b>뉴런 묶음</b>이 ○○ 행동을 담당한다"고 주장합니다.
+        그 뉴런 묶음을 <b>강하게 켰을 때</b> 차의 계획 경로가 어떻게 바뀌는지 보여 드립니다.
+        어느 팀의 뉴런 묶음이 <b>정말 그 설명대로</b> 차를 움직이는지 판단해 주세요.</p>
+      <ul class="legend-list">
+        <li><span class="sw sw-orig"></span> 주황 선: 원래 계획 경로</li>
+        <li><span class="sw sw-steer"></span> 파란 선: 뉴런 묶음을 켠 뒤의 계획 경로</li>
+        <li><span class="dot"></span> 선 위의 점: 0.5초마다 차가 있을 위치 (점 간격이 넓을수록 빠름)</li>
+        <li>지도 위의 두 차는 두 경로를 따라 <b>2배속</b>으로 움직입니다(실제 4초를 2초에 재생).</li>
+      </ul>
+      <p>모두 <b>28문항</b>(연습 1문항 포함)과 짧은 설문이 있고, 약 18분 걸립니다. PC나 노트북에서 해 주세요.
+        정답이 정해진 문항이 아니므로 보이는 대로 답해 주세요.</p>
+    </div>
+    <label class="idrow">평가자 ID (영문·숫자) <input id="annId" autocomplete="off" maxlength="32" placeholder="예: p07"></label>
+    <p id="idNote" class="note"></p>
+    <button id="startBtn" class="primary" disabled>시작</button>
+  </section>
+
+  <!-- trial -->
+  <section id="trial" class="screen hidden">
+    <header class="trial-head">
+      <div class="claim-box">
+        <div class="claim">모델 안의 이 뉴런 묶음은 <span id="claim" class="claim-word"></span><span id="josa"></span> 담당한다고 합니다.</div>
+        <div class="claim-task">이 뉴런 묶음을 강하게 켰을 때 차가 정말 <b id="claimVerb"></b> 파란 경로를 보고 확인해 주세요.</div>
+      </div>
+      <div class="prog"><span id="practiceTag" class="tag hidden">연습</span><span id="prog"></span></div>
+    </header>
+    <div class="context">
+      <figure class="cam"><img id="cam" alt="전방 카메라"><figcaption>전방 카메라 (왼쪽 | 앞 | 오른쪽)</figcaption></figure>
+      <div class="ego">
+        <div>현재 속도 <b id="egoSpeed"></b> km/h</div>
+        <div>내비 지시 <b id="egoCmd"></b></div>
+        <div class="legend-mini"><span class="sw sw-orig"></span> 원래 경로 <span class="sw sw-steer"></span> 뉴런 묶음을 켠 뒤</div>
+        <button id="replayBtn" class="ghost">⟲ 다시 재생</button>
+      </div>
+    </div>
+    <div id="panels" class="panels"></div>
+    <div class="q3">
+      <span class="q3-label">셋 중 "<span id="claim2"></span>" 설명에 <b>가장 맞는 것</b>은?</span>
+      <div id="q3btns" class="q3btns"></div>
+    </div>
+    <div id="feedback" class="feedback hidden"></div>
+    <footer class="nav">
+      <button id="prevBtn" class="ghost">이전</button>
+      <span id="hint" class="note">각 결과의 질문과 마지막 질문에 모두 답하면 다음으로 넘어갈 수 있습니다.</span>
+      <button id="nextBtn" class="primary" disabled>다음</button>
+    </footer>
+  </section>
+
+  <!-- survey -->
+  <section id="survey" class="screen hidden">
+    <h1>마지막으로 몇 가지만 알려 주세요</h1>
+    <div class="card">
+      <div id="svForm" class="survey"></div>
+      <label class="svq-free">하고 싶은 말이 있으면 적어 주세요 (선택)
+        <textarea id="comment" rows="3"></textarea></label>
+    </div>
+    <footer class="nav">
+      <button id="svBack" class="ghost">문항으로 돌아가기</button>
+      <button id="svSubmit" class="primary" disabled>제출</button>
+    </footer>
+  </section>
+
+  <!-- done -->
+  <section id="done" class="screen hidden">
+    <h1>수고하셨습니다</h1>
+    <div class="card">
+      <p id="doneStatus"></p>
+      <button id="dlBtn">결과 파일 내려받기</button>
+      <p id="dlNote" class="note"></p>
+    </div>
+  </section>
+</main>
+<script src="config.js?v=2608ae7cce"></script>
+<script src="data/manifest.js?v=43a2a60e8e"></script>
+<script src="core.js?v=fc119a5aee"></script>
+<script src="app.js?v=8d071b08a6"></script>
+</body>
+</html>
