@@ -106,7 +106,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .claimtask b { color: var(--ink); }
 .verbword { display: inline-block; background: #fff; color: var(--accent); font-weight: 800; padding: 0 8px; border-radius: 6px;
   margin: 0 2px; box-shadow: 0 0 0 1px #c7d7fb; font-size: 16px; }
-.claimsafety { flex-basis: 100%; text-align: center; font-size: 13px; color: #92400e; background: #fef3c7; border-radius: 8px; padding: 4px 10px; margin: 4px 0 0; }
+/* question on its own line, then the safety note, then the choices (2026-11-23) */
+.q3label { flex-basis: 100%; text-align: center; }
+.claimsafety { flex-basis: 100%; text-align: center; font-size: 13px; color: #92400e; background: #fef3c7; border-radius: 8px; padding: 4px 10px; margin: 0; }
 .claimsafety b { color: #78350f; }
 .egobox { grid-area: ego; display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; font-size: 14px; color: #374151;
   background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; }
